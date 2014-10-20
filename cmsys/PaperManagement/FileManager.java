@@ -41,7 +41,7 @@ public class FileManager {
 				out.write(buffer, 0, bytesRead);
 			}
 		} catch (IOException e) {
-			throw new CmsysException(31);
+			throw new CmsysException(32);
 		}
 		
 	}
