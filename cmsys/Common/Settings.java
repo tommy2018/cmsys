@@ -20,6 +20,7 @@ public class Settings {
 			programSettings.put("dbURL", settings.getProperty("dbURL"));
 			programSettings.put("dbUsername", settings.getProperty("dbUsername"));
 			programSettings.put("dbPassword", settings.getProperty("dbPassword"));
+			programSettings.put("docDir", settings.getProperty("docDir"));
 	
 			for (String key : programSettings.keySet()) {
 				if (programSettings.get(key) == null)

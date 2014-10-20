@@ -11,9 +11,10 @@ public class Submission {
 		
 		try (
 			Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
-			PreparedStatement statement = conn.prepareStatement("INSERT INTO user(username, password, firstName, lastName, email, role) VALUES (?, ?, ?, ?, ?, ?)");
+			PreparedStatement statement = conn.prepareStatement("INSERT INTO paper() VALUES ()");
 		) {
 			
+			statement.executeUpdate();
 		} catch (SQLException e) {
 			throw new CmsysException(24);
 		}

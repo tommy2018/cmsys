@@ -4,7 +4,7 @@ import java.sql.*;
 import cmsys.Common.*;
 
 public class Register {
-	public static int newUser(String username, String password, String email, String firstName, String lastName) throws CmsysException {
+	public static void newUser(String username, String password, String email, String firstName, String lastName) throws CmsysException {
 		Settings settings = Settings.getInstance();
 		int role = 1;
 		
@@ -21,7 +21,6 @@ public class Register {
 			statement.setInt(6, role);
 
 			statement.executeUpdate();
-			return 0;
 		} catch (SQLException e) {
 			throw new CmsysException(24);
 		}
