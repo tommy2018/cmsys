@@ -31,14 +31,66 @@ public class Paper {
 		this.hashWOH = hashWOH;
 	}
 	
-	static public ArrayList<Integer> getPaperListByUID(int uid) throws CmsysException {
+	public int getUid() {
+		return uid;
+	}
+	
+	public int getPid() {
+		return pid;
+	}
+	
+	public int getStatus() {
+		return status;
+	}
+	
+	public ArrayList<String> getKeywords() {
+		return keywords;
+	}
+	
+	public ArrayList<String> getAuthors() {
+		return authors;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public String getPaperAbstract() {
+		return paperAbstract;
+	}
+	
+	public String getDocFilenameWH() {
+		return docFilenameWH;
+	}
+	
+	public String getDocFilenameWOH() {
+		return docFilenameWOH;
+	}
+	
+	public String getHashWH() {
+		return hashWH;
+	}
+	
+	public String getHashWOH() {
+		return hashWOH;
+	}
+	
+	static public ArrayList<Paper> getPaperListByUID(int uid) throws CmsysException {
 		 Settings settings = Settings.getInstance();
 		 
 		 try (
 				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
-				PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper WHERE uid = ?");
+				PreparedStatement statement = conn.prepareStatement("SELECT pid FROM paper WHERE uid = ?");
 			) {
-			 	ArrayList<Integer> list = new ArrayList<Integer>();
+			 	ArrayList<Paper> list = new ArrayList<Paper>();
+			 	ResultSet result = null;
+				
+				statement.setInt(1, uid);
+				result = statement.executeQuery();
+				
+				while (result.next()) {
+					list.add(getPaperByPID(result.getInt("pid")));
+				}
 			 	
 			 	return list;
 		 } catch (SQLException e) {
@@ -73,7 +125,8 @@ public class Paper {
 					hashWH = result.getString("hashFilenameWH");
 					hashWOH = result.getString("hashFilenameWOH");
 					authors = getAuthorList(pid);
-					//getKeywordList(pid)
+					keywords = getKeywordList(pid);
+					
 					paper = new Paper(uid, pid, status, keywords, authors, title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH);
 				}
 
@@ -84,14 +137,48 @@ public class Paper {
 			}
 	}
 	
-	static private ArrayList<String> getAuthorList(int pid) {
+	static private ArrayList<String> getAuthorList(int pid) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		
 		try (
 				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
-				PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper WHERE pid = ?");
+				PreparedStatement statement = conn.prepareStatement("SELECT author FROM paperAuthor WHERE pid = ?");
 			)
 		{
-			ArrayList<String> list = null;
+			ArrayList<String> list = new ArrayList<String>();
+			ResultSet result = null;
+			
+			statement.setInt(1, pid);
+			result = statement.executeQuery();
+			
+			while (result.next()) {
+				list.add(result.getString("author"));
+			}
+			
+			return list;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+	
+	static private ArrayList<String> getKeywordList(int pid) throws CmsysException {
+		Settings settings = Settings.getInstance();
 		
+		try (
+				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
+				PreparedStatement statement = conn.prepareStatement("SELECT keyword FROM paperKeyword WHERE pid = ?");
+			)
+		{
+			ArrayList<String> list = new ArrayList<String>();
+			ResultSet result = null;
+			
+			statement.setInt(1, pid);
+			result = statement.executeQuery();
+			
+			while (result.next()) {
+				list.add(result.getString("keyword"));
+			}
+			
 			return list;
 		} catch (SQLException e) {
 			throw new CmsysException(24);
