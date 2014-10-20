@@ -8,11 +8,27 @@ public class Paper {
 	private int uid;
 	private int pid;
 	private int status;
-	private String title;
 	private ArrayList<String> keywords;
-	private String[] docFileName;
+	private ArrayList<String> authors;
+	private String title;
+	private String paperAbstract;
+	private String docFilenameWH;
+	private String docFilenameWOH;
+	private String hashWH;
+	private String hashWOH;
 	
-	public void changeStatus(int status) {
+	public Paper(int uid, int pid, int status, ArrayList<String> keywords, ArrayList<String> authors, String title, String paperAbstract, String docFilenameWH, String docFilenameWOH, String hashWH, String hashWOH) {
+		this.uid = uid;
+		this.pid = pid;
+		this.status = status;
+		this.keywords = keywords;
+		this.authors = authors;
+		this.title = title;
+		this.paperAbstract = paperAbstract;
+		this.docFilenameWH = docFilenameWH;
+		this.docFilenameWOH = docFilenameWOH;
+		this.hashWH = hashWH;
+		this.hashWOH = hashWOH;
 	}
 	
 	static public ArrayList<Integer> getPaperListByUID(int uid) throws CmsysException {
@@ -44,7 +60,21 @@ public class Paper {
 				result = statement.executeQuery();
 				
 				if (result.next()) {
-					paper = new Paper();
+					int uid, status; 
+					String title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH;
+					ArrayList<String> keywords, authors;
+					
+					uid = result.getInt("uid");
+					status = result.getInt("status");
+					title = result.getString("title");
+					paperAbstract = result.getString("abstract");
+					docFilenameWH = result.getString("filenameWH");
+					docFilenameWOH = result.getString("filenameWOH");
+					hashWH = result.getString("hashFilenameWH");
+					hashWOH = result.getString("hashFilenameWOH");
+					authors = getAuthorList(pid);
+					//getKeywordList(pid)
+					paper = new Paper(uid, pid, status, keywords, authors, title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH);
 				}
 
 				result.close();
@@ -52,5 +82,19 @@ public class Paper {
 			} catch (SQLException e) {
 				throw new CmsysException(24);
 			}
+	}
+	
+	static private ArrayList<String> getAuthorList(int pid) {
+		try (
+				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
+				PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper WHERE pid = ?");
+			)
+		{
+			ArrayList<String> list = null;
+		
+			return list;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
 	}
 }
