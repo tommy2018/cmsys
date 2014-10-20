@@ -152,7 +152,7 @@ public class Paper {
 			result = statement.executeQuery();
 			
 			while (result.next()) {
-				list.add(result.getString("firstName") + result.getString("lastName"));
+				list.add(result.getString("lastName") + ", " + result.getString("firstName"));
 			}
 			
 			return list;
