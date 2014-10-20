@@ -142,7 +142,7 @@ public class Paper {
 		
 		try (
 				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
-				PreparedStatement statement = conn.prepareStatement("SELECT author FROM paperAuthor WHERE pid = ?");
+				PreparedStatement statement = conn.prepareStatement("SELECT firstName, lastName FROM paperAuthor WHERE pid = ?");
 			)
 		{
 			ArrayList<String> list = new ArrayList<String>();
@@ -152,7 +152,7 @@ public class Paper {
 			result = statement.executeQuery();
 			
 			while (result.next()) {
-				list.add(result.getString("author"));
+				list.add(result.getString("firstName") + result.getString("lastName"));
 			}
 			
 			return list;
