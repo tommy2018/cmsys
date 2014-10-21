@@ -2,7 +2,6 @@ import cmsys.Common.*;
 import cmsys.UserManagement.*;
 import cmsys.PaperManagement.*;
 
-import java.sql.SQLException;
 import java.util.*;
 
 public class MainController {

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import cmsys.Common.CmsysException;
 import cmsys.Common.Encryption;
 import cmsys.Common.Settings;
-import cmsys.PaperManagement.Paper;
 
 public class User {
 	private int uid;
