@@ -71,6 +71,30 @@ public class User {
 	public void changeRole(int role) {
 	}
 	
+	static public User getUserByUid(int uid) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM user WHERE uid = ?");	
+		) {
+			User user = null;
+		 	ResultSet result = null;
+		 	
+		 	statement.setInt(1, uid);
+			result = statement.executeQuery();
+		 	
+			while (result.next()) {
+				user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
+						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+			}
+			
+		 	return user;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+	
 	static public ArrayList<User> searchUserByUsername(String keywords) throws CmsysException {
 		Settings settings = Settings.getInstance();
 		Connection conn = settings.getDBConnection();
