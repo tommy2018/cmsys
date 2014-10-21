@@ -5,25 +5,15 @@ import java.util.*;
 
 import cmsys.Common.*;
 
-public class Discussion {
-	private ArrayList<DiscussionComment> commentList;
-	
-	public Discussion() {
-		commentList = new ArrayList<DiscussionComment>();
-	}
-	
-	public ArrayList<DiscussionComment> getCommentList() {
-		return commentList;
-	}
-	
-	static public Discussion getDiscussionByPid(int pid) throws CmsysException {
+public class Discussion {	
+	static public ArrayList<DiscussionComment> getDiscussionByPid(int pid) throws CmsysException {
 		Settings settings = Settings.getInstance();
 		Connection conn = settings.getDBConnection();
 		
 		try (
 			PreparedStatement statement = conn.prepareStatement("SELECT * FROM discussion WHERE pid = ? ORDER BY timestamp ASC");
 		) {
-			Discussion discussion = new Discussion();
+			ArrayList<DiscussionComment> discussion = new ArrayList<DiscussionComment>();
 			ResultSet result = null;
 
 			statement.setInt(1, pid);
@@ -36,7 +26,7 @@ public class Discussion {
 				comment.timestamp = result.getInt("timestamp");
 				comment.content = result.getString("content");
 				
-				discussion.getCommentList().add(comment);
+				discussion.add(comment);
 			}
 			
 			return discussion;

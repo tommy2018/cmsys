@@ -105,7 +105,7 @@ public class Paper {
 		 Connection conn = settings.getDBConnection();
 		 
 		 try (
-				PreparedStatement statement = conn.prepareStatement("SELECT pid FROM paper WHERE uid = ? ANS status = ?");
+				PreparedStatement statement = conn.prepareStatement("SELECT pid FROM paper WHERE uid = ? AND status = ?");
 		) {
 			 	ArrayList<Paper> list = new ArrayList<Paper>();
 			 	ResultSet result = null;
