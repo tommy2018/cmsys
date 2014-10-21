@@ -44,7 +44,7 @@ public class Discussion {
 		) {
 			statement.setInt(1, pid);
 			statement.setInt(2, comment.uid);
-			statement.setInt(3, comment.timestamp);
+			statement.setLong(3, comment.timestamp);
 			statement.setString(4, comment.content);
 
 			statement.executeUpdate();
