@@ -1,5 +1,16 @@
 package cmsys.UserManagement;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import cmsys.Common.CmsysException;
+import cmsys.Common.Encryption;
+import cmsys.Common.Settings;
+import cmsys.PaperManagement.Paper;
+
 public class User {
 	private int uid;
 	private int role;
@@ -41,11 +52,78 @@ public class User {
 		return role;
 	}
 	
-	public void changePassword() {
+	public void changePassword(String password) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
 		
+		try (
+			PreparedStatement statement = conn.prepareStatement("UPDATE user SET password = ? WHERE uid = ?");
+		) {
+			password = Encryption.sha256(password);
+			statement.setString(1, password);
+			statement.setInt(2, uid);
+
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
 	}
 	
-	public void changeRole() {
+	public void changeRole(int role) {
 	}
 	
+	static public ArrayList<User> searchUserByUsername(String keywords) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM user WHERE username LIKE ? LIMIT 30");	
+		) {
+			ArrayList<User> list = new ArrayList<User>();
+		 	ResultSet result = null;
+		 	
+		 	keywords = '%' + keywords.trim() + '%';
+		 	
+		 	statement.setString(1, keywords);
+			result = statement.executeQuery();
+		 	
+			while (result.next()) {
+				User user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
+						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+				list.add(user);
+			}
+			
+		 	return list;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+	
+	static public ArrayList<User> searchUserByName(String keywords) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM user WHERE firstName LIKE ? OR lastName LIKE ? LIMIT 30");	
+		) {
+			ArrayList<User> list = new ArrayList<User>();
+		 	ResultSet result = null;
+		 	
+		 	keywords = '%' + keywords.trim() + '%';
+		 	
+		 	statement.setString(1, keywords);
+		 	statement.setString(2, keywords);
+			result = statement.executeQuery();
+		 	
+			while (result.next()) {
+				User user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
+						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+				list.add(user);
+			}
+			
+		 	return list;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
 }
