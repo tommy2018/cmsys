@@ -100,6 +100,30 @@ public class Paper {
 		 }
 	}
 	
+	static public ArrayList<Paper> getPaperListByUid(int uid, int status) throws CmsysException {
+		 Settings settings = Settings.getInstance();
+		 Connection conn = settings.getDBConnection();
+		 
+		 try (
+				PreparedStatement statement = conn.prepareStatement("SELECT pid FROM paper WHERE uid = ? ANS status = ?");
+		) {
+			 	ArrayList<Paper> list = new ArrayList<Paper>();
+			 	ResultSet result = null;
+				
+				statement.setInt(1, uid);
+				statement.setInt(2, status);
+				result = statement.executeQuery();
+				
+				while (result.next()) {
+					list.add(getPaperByPid(result.getInt("pid")));
+				}
+			 	
+			 	return list;
+		 } catch (SQLException e) {
+			 throw new CmsysException(24);
+		 }
+	}
+	
 	static public Paper getPaperByPid(int pid) throws CmsysException {
 		Settings settings = Settings.getInstance();
 		Connection conn = settings.getDBConnection();

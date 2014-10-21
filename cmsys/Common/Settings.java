@@ -43,7 +43,7 @@ public class Settings {
 		}
 	}
 	
-	public Connection getDBConnection() throws CmsysException {
+	public synchronized Connection getDBConnection() throws CmsysException {
 		try {
 			if (conn.isClosed())
 				conn = DriverManager.getConnection(getSetting("dbURL"), getSetting("dbUsername"), getSetting("dbPassword"));
@@ -54,7 +54,7 @@ public class Settings {
 		return conn;
 	}
 
-	public static Settings getInstance() throws CmsysException { 
+	public static synchronized Settings getInstance() throws CmsysException { 
 		if (settings == null)
 			settings = new Settings("settings.ini");
 
