@@ -3,6 +3,7 @@ package cmsys.Common;
 import java.util.*;
 
 public class CmsysException extends Exception {
+	private static final long serialVersionUID = 141383655304811698L;
 	private int errorCode;
 	static private Map<Integer, String> messages;
 	

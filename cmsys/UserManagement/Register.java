@@ -6,10 +6,10 @@ import cmsys.Common.*;
 public class Register {
 	public static void newUser(String username, String password, String email, String firstName, String lastName) throws CmsysException {
 		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
 		int role = 1;
 		
 		try (
-			Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
 			PreparedStatement statement = conn.prepareStatement("INSERT INTO user(username, password, firstName, lastName, email, role) VALUES (?, ?, ?, ?, ?, ?)");
 		) {
 			password = Encryption.sha256(password);

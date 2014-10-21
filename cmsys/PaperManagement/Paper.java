@@ -1,7 +1,9 @@
 package cmsys.PaperManagement;
 
 import java.sql.*;
+
 import cmsys.Common.*;
+
 import java.util.*;
 
 public class Paper {
@@ -75,13 +77,13 @@ public class Paper {
 		return hashWOH;
 	}
 	
-	static public ArrayList<Paper> getPaperListByUID(int uid) throws CmsysException {
+	static public ArrayList<Paper> getPaperListByUid(int uid) throws CmsysException {
 		 Settings settings = Settings.getInstance();
+		 Connection conn = settings.getDBConnection();
 		 
 		 try (
-				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
 				PreparedStatement statement = conn.prepareStatement("SELECT pid FROM paper WHERE uid = ?");
-			) {
+		) {
 			 	ArrayList<Paper> list = new ArrayList<Paper>();
 			 	ResultSet result = null;
 				
@@ -89,7 +91,7 @@ public class Paper {
 				result = statement.executeQuery();
 				
 				while (result.next()) {
-					list.add(getPaperByPID(result.getInt("pid")));
+					list.add(getPaperByPid(result.getInt("pid")));
 				}
 			 	
 			 	return list;
@@ -98,13 +100,13 @@ public class Paper {
 		 }
 	}
 	
-	static public Paper getPaperByPID(int pid) throws CmsysException {
+	static public Paper getPaperByPid(int pid) throws CmsysException {
 		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
 		
 		try (
-				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
 				PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper WHERE pid = ?");
-			) {
+		) {
 				Paper paper = null;
 				ResultSet result = null;
 
@@ -139,12 +141,12 @@ public class Paper {
 	
 	static private ArrayList<String> getAuthorList(int pid) throws CmsysException {
 		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
 		
 		try (
-				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
 				PreparedStatement statement = conn.prepareStatement("SELECT firstName, lastName FROM paperAuthor WHERE pid = ?");
-			)
-		{
+		) {
+			
 			ArrayList<String> list = new ArrayList<String>();
 			ResultSet result = null;
 			
@@ -163,12 +165,12 @@ public class Paper {
 	
 	static private ArrayList<String> getKeywordList(int pid) throws CmsysException {
 		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
 		
 		try (
-				Connection conn = DriverManager.getConnection(settings.getSetting("dbURL"), settings.getSetting("dbUsername"), settings.getSetting("dbPassword"));
 				PreparedStatement statement = conn.prepareStatement("SELECT keyword FROM paperKeyword WHERE pid = ?");
-			)
-		{
+		) {
+			
 			ArrayList<String> list = new ArrayList<String>();
 			ResultSet result = null;
 			
