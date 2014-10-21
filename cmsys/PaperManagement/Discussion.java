@@ -23,7 +23,7 @@ public class Discussion {
 				DiscussionComment comment = new DiscussionComment();
 				
 				comment.uid = result.getInt("uid");
-				comment.timestamp = result.getInt("timestamp");
+				comment.timestamp = result.getLong("timestamp");
 				comment.content = result.getString("content");
 				
 				discussion.add(comment);
@@ -40,7 +40,7 @@ public class Discussion {
 		Connection conn = settings.getDBConnection();
 		
 		try (
-			PreparedStatement statement = conn.prepareStatement("INSERT INTO discussion(pid, uid, timestamp, content) VALUES (?, ?, ?)");
+			PreparedStatement statement = conn.prepareStatement("INSERT INTO discussion(pid, uid, timestamp, content) VALUES (?, ?, ?, ?)");
 		) {
 			statement.setInt(1, pid);
 			statement.setInt(2, comment.uid);
