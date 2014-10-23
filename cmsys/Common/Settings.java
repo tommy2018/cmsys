@@ -4,28 +4,28 @@ import java.sql.*;
 import java.util.*;
 import java.io.*;
 
+import cmsys.PaperManagement.DiscussionComment;
+
 public class Settings {
 	private static Settings settings = null;
-	private Connection conn;
 	private Map<String, String> programSettings;
+	private Map<Long, Connection> threadRecord;
 
 	private Settings(String filename) throws CmsysException {
-		try (
-			FileInputStream file = new FileInputStream(filename);
-		) {
-			
+		try (FileInputStream file = new FileInputStream(filename);) {
+
 			programSettings = new HashMap<String, String>();
-			Properties settings = new Properties();	
-	
+			Properties settings = new Properties();
+
 			settings.load(file);
-			programSettings.put("programName", settings.getProperty("programName"));
-			programSettings.put("programVersion", settings.getProperty("programVersion"));
 			programSettings.put("dbDrivers", settings.getProperty("dbDrivers"));
 			programSettings.put("dbURL", settings.getProperty("dbURL"));
-			programSettings.put("dbUsername", settings.getProperty("dbUsername"));
-			programSettings.put("dbPassword", settings.getProperty("dbPassword"));
+			programSettings.put("dbUsername",
+					settings.getProperty("dbUsername"));
+			programSettings.put("dbPassword",
+					settings.getProperty("dbPassword"));
 			programSettings.put("docDir", settings.getProperty("docDir"));
-	
+
 			for (String key : programSettings.keySet()) {
 				if (programSettings.get(key) == null)
 					throw new CmsysException(0);
@@ -33,28 +33,36 @@ public class Settings {
 
 			System.setProperty("jdbc.drivers", programSettings.get("dbDrivers"));
 			file.close();
-			conn = DriverManager.getConnection(getSetting("dbURL"), getSetting("dbUsername"), getSetting("dbPassword"));
+			threadRecord = new HashMap<Long, Connection>();
 		} catch (FileNotFoundException e) {
 			throw new CmsysException(1);
 		} catch (IOException e) {
 			throw new CmsysException(2);
-		} catch (SQLException e) {
-			throw new CmsysException(24);
 		}
-	}
-	
-	public synchronized Connection getDBConnection() throws CmsysException {
-		try {
-			if (conn.isClosed())
-				conn = DriverManager.getConnection(getSetting("dbURL"), getSetting("dbUsername"), getSetting("dbPassword"));
-		} catch (SQLException e) {
-			throw new CmsysException(24);
-		}
-		
-		return conn;
 	}
 
-	public static synchronized Settings getInstance() throws CmsysException { 
+	public synchronized Connection getDBConnection() throws CmsysException {
+		try {
+			System.err.println(Thread.currentThread().getId());
+			Connection conn = threadRecord.get(Thread.currentThread().getId());
+
+			if (conn == null) {
+				conn = DriverManager.getConnection(getSetting("dbURL"),
+						getSetting("dbUsername"), getSetting("dbPassword"));
+				threadRecord.put(Thread.currentThread().getId(), conn);
+			} else if (conn.isClosed()) {
+				conn = DriverManager.getConnection(getSetting("dbURL"),
+						getSetting("dbUsername"), getSetting("dbPassword"));
+				threadRecord.put(Thread.currentThread().getId(), conn);
+			}
+
+			return conn;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+
+	public static synchronized Settings getInstance() throws CmsysException {
 		if (settings == null)
 			settings = new Settings("settings.ini");
 
@@ -63,5 +71,28 @@ public class Settings {
 
 	public String getSetting(String settingName) {
 		return programSettings.get(settingName);
+	}
+
+	static public String getSettingFromDB(String key) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+
+		try (
+				PreparedStatement statement = conn.prepareStatement("SELECT value FROM setting WHERE item = ?");
+		) {
+			ResultSet result = null;
+			String value = null;
+
+			statement.setString(1, key);
+			result = statement.executeQuery();
+
+			if (result.next())
+				value = result.getString("value");
+			
+			return value;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+
 	}
 }
