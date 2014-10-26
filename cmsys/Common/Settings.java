@@ -4,8 +4,6 @@ import java.sql.*;
 import java.util.*;
 import java.io.*;
 
-import cmsys.PaperManagement.DiscussionComment;
-
 public class Settings {
 	private static Settings settings = null;
 	private Map<String, String> programSettings;
@@ -43,7 +41,7 @@ public class Settings {
 
 	public synchronized Connection getDBConnection() throws CmsysException {
 		try {
-			System.err.println(Thread.currentThread().getId());
+			System.err.println("Thread: " + Thread.currentThread().getId());
 			Connection conn = threadRecord.get(Thread.currentThread().getId());
 
 			if (conn == null) {

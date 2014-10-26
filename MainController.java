@@ -2,8 +2,11 @@ import cmsys.Common.*;
 import cmsys.UserManagement.*;
 import cmsys.PaperManagement.*;
 import cmsys.View.*;
+
 import javax.swing.*;
+
 import java.util.*;
+import java.io.*;
 
 public class MainController {
 	static public void main(String[] args) {
@@ -21,10 +24,9 @@ public class MainController {
 			
 			//Main frame
 			JFrame frame = new MainFrame();
-			
+					
 			frame.pack();
 			frame.setVisible(true);
-			
 		} catch (CmsysException e) {
 			System.err.println(e.getMessage());
 		}

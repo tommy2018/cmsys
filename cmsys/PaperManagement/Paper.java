@@ -11,7 +11,7 @@ public class Paper {
 	private int pid;
 	private int status;
 	private ArrayList<String> keywords;
-	private ArrayList<String> authors;
+	private ArrayList<Author> authors;
 	private String title;
 	private String paperAbstract;
 	private String docFilenameWH;
@@ -19,7 +19,7 @@ public class Paper {
 	private String hashWH;
 	private String hashWOH;
 	
-	public Paper(int uid, int pid, int status, ArrayList<String> keywords, ArrayList<String> authors, String title, String paperAbstract, String docFilenameWH, String docFilenameWOH, String hashWH, String hashWOH) {
+	public Paper(int uid, int pid, int status, ArrayList<String> keywords, ArrayList<Author> authors, String title, String paperAbstract, String docFilenameWH, String docFilenameWOH, String hashWH, String hashWOH) {
 		this.uid = uid;
 		this.pid = pid;
 		this.status = status;
@@ -49,7 +49,7 @@ public class Paper {
 		return keywords;
 	}
 	
-	public ArrayList<String> getAuthors() {
+	public ArrayList<Author> getAuthors() {
 		return authors;
 	}
 	
@@ -77,51 +77,138 @@ public class Paper {
 		return hashWOH;
 	}
 	
+	public void accept() {
+		
+	}
+	
+	public void decline() {
+		
+	}
+	
 	static public ArrayList<Paper> getPaperListByUid(int uid) throws CmsysException {
 		 Settings settings = Settings.getInstance();
 		 Connection conn = settings.getDBConnection();
-		 
 		 try (
-				PreparedStatement statement = conn.prepareStatement("SELECT pid FROM paper WHERE uid = ?");
-		) {
-			 	ArrayList<Paper> list = new ArrayList<Paper>();
-			 	ResultSet result = null;
-				
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper WHERE uid = ?");
+		 ) {
+				ArrayList<Paper> paperList = new ArrayList<Paper>();
+				ResultSet result = null;
+
 				statement.setInt(1, uid);
 				result = statement.executeQuery();
-				
+					
 				while (result.next()) {
-					list.add(getPaperByPid(result.getInt("pid")));
+					Paper paper;
+					
+					int pid, status; 
+					String title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH;
+					ArrayList<String> keywords;
+					ArrayList<Author> authors;
+						
+					pid = result.getInt("pid");
+					status = result.getInt("status");
+					title = result.getString("title");
+					paperAbstract = result.getString("abstract");
+					docFilenameWH = result.getString("filenameWH");
+					docFilenameWOH = result.getString("filenameWOH");
+					hashWH = result.getString("hashFilenameWH");
+					hashWOH = result.getString("hashFilenameWOH");
+					authors = getAuthorList(pid);
+					keywords = getKeywordList(pid);
+					
+					paper = new Paper(uid, pid, status, keywords, authors, title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH);
+					paperList.add(paper);
 				}
-			 	
-			 	return list;
-		 } catch (SQLException e) {
-			 throw new CmsysException(24);
-		 }
+
+				result.close();
+				return paperList;
+			} catch (SQLException e) {
+				throw new CmsysException(24);
+			}
 	}
 	
-	static public ArrayList<Paper> getPaperListByUid(int uid, int status) throws CmsysException {
-		 Settings settings = Settings.getInstance();
-		 Connection conn = settings.getDBConnection();
-		 
-		 try (
-				PreparedStatement statement = conn.prepareStatement("SELECT pid FROM paper WHERE uid = ? AND status = ?");
+	static public ArrayList<Paper> getPaperList() throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper");
 		) {
-			 	ArrayList<Paper> list = new ArrayList<Paper>();
-			 	ResultSet result = null;
-				
-				statement.setInt(1, uid);
-				statement.setInt(2, status);
+			ArrayList<Paper> paperList = new ArrayList<Paper>();
+			ResultSet result = null;
 				result = statement.executeQuery();
 				
+			while (result.next()) {
+				Paper paper;
+				
+				int uid, pid, status; 
+				String title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH;
+				ArrayList<String> keywords;
+				ArrayList<Author> authors;
+					
+				pid = result.getInt("pid");
+				uid = result.getInt("uid");
+				status = result.getInt("status");
+				title = result.getString("title");
+				paperAbstract = result.getString("abstract");
+				docFilenameWH = result.getString("filenameWH");
+				docFilenameWOH = result.getString("filenameWOH");
+				hashWH = result.getString("hashFilenameWH");
+				hashWOH = result.getString("hashFilenameWOH");
+				authors = getAuthorList(pid);
+				keywords = getKeywordList(pid);
+					
+				paper = new Paper(uid, pid, status, keywords, authors, title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH);
+				paperList.add(paper);
+			}
+
+			result.close();
+			return paperList;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+	
+	static public ArrayList<Paper> getReviewPaperListByUid(int uid) throws CmsysException {
+		 Settings settings = Settings.getInstance();
+		 Connection conn = settings.getDBConnection();
+		 try (
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper JOIN distribution USING(pid, uid) WHERE uid = ? AND status = 5");
+		 ) {
+				ArrayList<Paper> paperList = new ArrayList<Paper>();
+				ResultSet result = null;
+
+				statement.setInt(1, uid);
+				result = statement.executeQuery();
+					
 				while (result.next()) {
-					list.add(getPaperByPid(result.getInt("pid")));
+					Paper paper;
+					
+					int pid, status; 
+					String title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH;
+					ArrayList<String> keywords;
+					ArrayList<Author> authors;
+						
+					pid = result.getInt("pid");
+					status = result.getInt("status");
+					title = result.getString("title");
+					paperAbstract = result.getString("abstract");
+					docFilenameWH = result.getString("filenameWH");
+					docFilenameWOH = result.getString("filenameWOH");
+					hashWH = result.getString("hashFilenameWH");
+					hashWOH = result.getString("hashFilenameWOH");
+					authors = getAuthorList(pid);
+					keywords = getKeywordList(pid);
+					
+					paper = new Paper(uid, pid, status, keywords, authors, title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH);
+					paperList.add(paper);
 				}
-			 	
-			 	return list;
-		 } catch (SQLException e) {
-			 throw new CmsysException(24);
-		 }
+
+				result.close();
+				return paperList;
+			} catch (SQLException e) {
+				throw new CmsysException(24);
+			}
 	}
 	
 	static public Paper getPaperByPid(int pid) throws CmsysException {
@@ -140,7 +227,8 @@ public class Paper {
 				if (result.next()) {
 					int uid, status; 
 					String title, paperAbstract, docFilenameWH, docFilenameWOH, hashWH, hashWOH;
-					ArrayList<String> keywords, authors;
+					ArrayList<String> keywords;
+					ArrayList<Author> authors;
 					
 					uid = result.getInt("uid");
 					status = result.getInt("status");
@@ -163,7 +251,7 @@ public class Paper {
 			}
 	}
 	
-	static private ArrayList<String> getAuthorList(int pid) throws CmsysException {
+	static private ArrayList<Author> getAuthorList(int pid) throws CmsysException {
 		Settings settings = Settings.getInstance();
 		Connection conn = settings.getDBConnection();
 		
@@ -171,16 +259,17 @@ public class Paper {
 				PreparedStatement statement = conn.prepareStatement("SELECT firstName, lastName FROM paperAuthor WHERE pid = ?");
 		) {
 			
-			ArrayList<String> list = new ArrayList<String>();
+			ArrayList<Author> list = new ArrayList<Author>();
 			ResultSet result = null;
 			
 			statement.setInt(1, pid);
 			result = statement.executeQuery();
 			
 			while (result.next()) {
-				list.add(result.getString("lastName") + ", " + result.getString("firstName"));
+				list.add(new Author(result.getString("firstName"), result.getString("lastName")));
 			}
 			
+			result.close();
 			return list;
 		} catch (SQLException e) {
 			throw new CmsysException(24);
@@ -205,6 +294,7 @@ public class Paper {
 				list.add(result.getString("keyword"));
 			}
 			
+			result.close();
 			return list;
 		} catch (SQLException e) {
 			throw new CmsysException(24);

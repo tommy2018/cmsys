@@ -1,6 +1,8 @@
 package cmsys.View;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import cmsys.Common.CmsysException;
 import cmsys.Common.UserDefault;
@@ -8,7 +10,8 @@ import cmsys.UserManagement.*;
 
 public class MyDetailsPanel extends javax.swing.JPanel {
 
-    public MyDetailsPanel() {
+	private static final long serialVersionUID = -4579181238230251010L;
+	public MyDetailsPanel() {
     	UserDefault userDefault = UserDefault.getInstance();
     	
     	user = (User)userDefault.getObj("user");
@@ -165,25 +168,39 @@ public class MyDetailsPanel extends javax.swing.JPanel {
     }
     
     private void changeButtonActionPerformed() {
-    	try {
-    		String password = new String(newPasswordTextField.getPassword());
-    		String confirmPassword = new String(confirmNewPasswordTextField.getPassword());
-    				
-    		if (confirmPassword.equals(password)) {
-    			if (confirmPassword.length() < 8)
-    				JOptionPane.showMessageDialog(this, "The password must contains at least 8 characters.", "Error", JOptionPane.ERROR_MESSAGE);
-    			else {
-    				user.changePassword(confirmPassword);
-    				newPasswordTextField.setText("");
-    				confirmNewPasswordTextField.setText("");
-    				JOptionPane.showMessageDialog(this, "Password has been changed successfully.");
-    			}
-    		} else {
-    			JOptionPane.showMessageDialog(this, "Both passwords have to be matched.", "Error", JOptionPane.ERROR_MESSAGE);
+    	JPanel self = this;
+    	
+    	changeButton.setEnabled(false);
+    	
+    	new Thread() {
+    		public void run() {
+    			SwingUtilities.invokeLater(new Runnable() {
+    				public void run() {
+    					try {
+    						String password = new String(newPasswordTextField.getPassword());
+    						String confirmPassword = new String(confirmNewPasswordTextField.getPassword());
+    						
+    						if (confirmPassword.equals(password)) {
+    							if (confirmPassword.length() < 8)
+    								JOptionPane.showMessageDialog(self, "The password must contains at least 8 characters.", "Error", JOptionPane.ERROR_MESSAGE);
+    							else {
+    								user.changePassword(confirmPassword);
+    								newPasswordTextField.setText("");
+    								confirmNewPasswordTextField.setText("");
+    								JOptionPane.showMessageDialog(self, "Password has been changed successfully.");
+    							}
+    						} else {
+    							JOptionPane.showMessageDialog(self, "Both passwords have to be matched.", "Error", JOptionPane.ERROR_MESSAGE);
+    						}
+    						
+    						changeButton.setEnabled(true);
+    					} catch (CmsysException e) {
+    						JOptionPane.showMessageDialog(self, "Unable to change the password (" + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
+    					}
+    				}
+    			});
     		}
-    	} catch (CmsysException e) {
-    		JOptionPane.showMessageDialog(this, "Unable to change the password (" + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
-    	}
+    	}.start();
     }
 
     private javax.swing.JPanel basicDetailsPanel;

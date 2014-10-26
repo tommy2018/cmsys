@@ -7,7 +7,8 @@ import cmsys.UserManagement.*;
 
 public class MainFrame extends javax.swing.JFrame {
 	
-    public MainFrame() {
+	private static final long serialVersionUID = -4701337077433129909L;
+	public MainFrame() {
     	UserDefault userDefault = UserDefault.getInstance();
     	
     	user = (User)userDefault.getObj("user");
@@ -31,7 +32,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         loginAsDesLabel.setText("Login as: ");
         
-        mainPanel.add(new NormalUserMainPanel(),BorderLayout.LINE_START);
+        mainPanel.add(new PcMemberMainPanel(),BorderLayout.LINE_START);
 
         loginAsLabel.setText(user.getUsername());
 
@@ -92,9 +93,8 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }
 
-    private void manualMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manualMenuItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_manualMenuItemActionPerformed
+    private void manualMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
 
     private javax.swing.JMenuItem aboutMenuItem;

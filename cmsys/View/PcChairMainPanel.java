@@ -1,9 +1,8 @@
 package cmsys.View;
 
-public class NormalUserMainPanel extends javax.swing.JPanel {
+public class PcChairMainPanel extends javax.swing.JPanel {
 
-	private static final long serialVersionUID = -4851645849373554801L;
-	public NormalUserMainPanel() {
+    public PcChairMainPanel() {
         initComponents();
     }
 
@@ -11,22 +10,16 @@ public class NormalUserMainPanel extends javax.swing.JPanel {
 
         mainPanel = new javax.swing.JPanel();
         latestEventsScrollPane = new javax.swing.JScrollPane();
-        latestEventsTextArea = new javax.swing.JTextArea();
         latestEventsDesLabel = new javax.swing.JLabel();
         mainTabbedPane = new javax.swing.JTabbedPane();
-        myPapersPanel = new MyPapersPanel();
-        myDetailsPanel = new MyDetailsPanel();
-
-        latestEventsTextArea.setColumns(20);
-        latestEventsTextArea.setRows(5);
-        latestEventsScrollPane.setViewportView(latestEventsTextArea);
 
         latestEventsDesLabel.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         latestEventsDesLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         latestEventsDesLabel.setText("Latest events:");
 
-        mainTabbedPane.addTab("My papers", myPapersPanel);
-        mainTabbedPane.addTab("My details", myDetailsPanel);
+        mainTabbedPane.addTab("Papers", new PapersPanel());
+
+        mainTabbedPane.addTab("My details", new MyDetailsPanel());
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -69,13 +62,13 @@ public class NormalUserMainPanel extends javax.swing.JPanel {
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-    }
+    }// </editor-fold>//GEN-END:initComponents
 
-    private javax.swing.JPanel myPapersPanel;
-    private javax.swing.JPanel myDetailsPanel;
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel latestEventsDesLabel;
     private javax.swing.JScrollPane latestEventsScrollPane;
-    private javax.swing.JTextArea latestEventsTextArea;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
+    // End of variables declaration//GEN-END:variables
 }

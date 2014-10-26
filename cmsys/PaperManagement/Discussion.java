@@ -22,9 +22,9 @@ public class Discussion {
 			while (result.next()) {
 				DiscussionComment comment = new DiscussionComment();
 				
-				comment.uid = result.getInt("uid");
-				comment.timestamp = result.getLong("timestamp");
-				comment.content = result.getString("content");
+				comment.setUid(result.getInt("uid"));
+				comment.setTimestamp(result.getLong("timestamp"));
+				comment.setContent(result.getString("content"));
 				
 				discussion.add(comment);
 			}
@@ -43,9 +43,9 @@ public class Discussion {
 			PreparedStatement statement = conn.prepareStatement("INSERT INTO discussion(pid, uid, timestamp, content) VALUES (?, ?, ?, ?)");
 		) {
 			statement.setInt(1, pid);
-			statement.setInt(2, comment.uid);
-			statement.setLong(3, comment.timestamp);
-			statement.setString(4, comment.content);
+			statement.setInt(2, comment.getUid());
+			statement.setLong(3, comment.getTimestamp());
+			statement.setString(4, comment.getContent());
 
 			statement.executeUpdate();
 		} catch (SQLException e) {
