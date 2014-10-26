@@ -159,7 +159,19 @@ public class Review {
 			
 			statement.executeUpdate();
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
+			throw new CmsysException(24);
+		}
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("UPDATE distribution SET status = 1 WHERE pid = ? AND uid = ?");
+		) {
+			int uid, pid;
+			uid = review.getUid();
+			pid = review.getPid();
+			statement.setInt(1, uid);
+			statement.setInt(2, pid);
+			statement.executeUpdate();
+		} catch (SQLException e) {
 			throw new CmsysException(24);
 		}
 		

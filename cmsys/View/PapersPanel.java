@@ -1,13 +1,12 @@
 package cmsys.View;
 
-import java.awt.Color;
+
 import java.awt.Component;
 import java.util.ArrayList;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.SwingWorker;
-import javax.swing.RowFilter.Entry;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -23,7 +22,8 @@ import cmsys.UserManagement.User;
 
 public class PapersPanel extends javax.swing.JPanel {
 
-    public PapersPanel() {
+	private static final long serialVersionUID = -457958327717370557L;
+	public PapersPanel() {
     	UserDefault userDefault = UserDefault.getInstance();
     	
     	user = (User)userDefault.getObj("user");
@@ -176,14 +176,12 @@ public class PapersPanel extends javax.swing.JPanel {
 		        
 		        int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
 		        int status = Status.toInt((String)(papersTable.getModel().getValueAt(selectedRow, 2)));
-		        /*switch (status) {
-					case 1:
-						responseButton.setEnabled(true);
+		        switch (status) {
+					case 6:
+						acceptButton.setEnabled(true);
+						declineButton.setEnabled(true);
 						break;
-					case 2:
-						submitFinalVersionButton.setEnabled(true);
-						break;
-				}*/
+				}
 				
 				viewPaperDetailsButton.setEnabled(true);
 			}
@@ -194,13 +192,65 @@ public class PapersPanel extends javax.swing.JPanel {
     	refreshTable();
     }
 
-    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_acceptButtonActionPerformed
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
+        int pid = (int)(papersTable.getModel().getValueAt(selectedRow, 0));
+        Component me = this;
+        Dialog dialog = new Dialog(this, "Applying...");
+        
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			protected Void doInBackground() {
+				try {
+					Paper paper = null;
+					paper = Paper.getPaperByPid(pid);
+					Paper.accept(paper.getPid());
+					dialog.close();
+					MessageBox.information("Paper accepted.", me);
+				} catch (CmsysException e) {
+					dialog.close();
+					MessageBox.error("Unable to perform this action.", me);
+				}
+				return null;
+			}
+			
+			protected void done() {
+				refreshTable();
+			}
+    	};
+    	
+    	worker.execute();
+    	dialog.show();
+    }
 
-    private void declineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_declineButtonActionPerformed
+    private void declineButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
+        int pid = (int)(papersTable.getModel().getValueAt(selectedRow, 0));
+        Component me = this;
+        Dialog dialog = new Dialog(this, "Applying...");
+        
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			protected Void doInBackground() {
+				try {
+					Paper paper = null;
+					paper = Paper.getPaperByPid(pid);
+					Paper.decline(paper.getPid());
+					dialog.close();
+					MessageBox.information("Paper accepted.", me);
+				} catch (CmsysException e) {
+					dialog.close();
+					MessageBox.error("Unable to perform this action.", me);
+				}
+				return null;
+			}
+			
+			protected void done() {
+				refreshTable();
+			}
+    	};
+    	
+    	worker.execute();
+    	dialog.show();
+    }
 
     private void viewPaperDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewPaperDetailsButtonActionPerformed
         // TODO add your handling code here:

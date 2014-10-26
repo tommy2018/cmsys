@@ -71,9 +71,9 @@ public class Submission {
 			) {
 				statement.setInt(1, pid);
 				statement.executeUpdate();
-			} catch (SQLException e) {
+		} catch (SQLException e) {
 				throw new CmsysException(24);
-			}
+		}
 		
 	}
 	

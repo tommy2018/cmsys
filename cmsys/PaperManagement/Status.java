@@ -29,7 +29,7 @@ public class Status {
 			return 0;
 		else if (status.equals("Awaiting response"))
 			return 1;
-		else if (status.equals("Accepted - Awaiting final version submission"))
+		else if (status.equals("Awaiting final version submission"))
 			return 2;
 		else if (status.equals("Accepted"))
 			return 3;

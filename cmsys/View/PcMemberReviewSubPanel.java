@@ -371,9 +371,10 @@ public class PcMemberReviewSubPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_getPdfButtonActionPerformed
 
-    private void openDiscussionBoardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDiscussionBoardButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_openDiscussionBoardButtonActionPerformed
+    private void openDiscussionBoardButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	Dialog dialog = new Dialog(this, new DiscussionPanel(paper), "Discussion", 0);
+    	dialog.show();
+    }
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	((PcMemberReviewPanel)parent).closePcMemberReviewSubPanel(false);

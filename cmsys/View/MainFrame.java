@@ -33,6 +33,8 @@ public class MainFrame extends javax.swing.JFrame {
         loginAsDesLabel.setText("Login as: ");
         
         mainPanel.add(new PcMemberMainPanel(),BorderLayout.LINE_START);
+        //mainPanel.add(new PcChairMainPanel(),BorderLayout.LINE_START);
+        //mainPanel.add(new NormalUserMainPanel(),BorderLayout.LINE_START);
 
         loginAsLabel.setText(user.getUsername());
 

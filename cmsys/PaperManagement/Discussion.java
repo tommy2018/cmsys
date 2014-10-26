@@ -11,7 +11,7 @@ public class Discussion {
 		Connection conn = settings.getDBConnection();
 		
 		try (
-			PreparedStatement statement = conn.prepareStatement("SELECT * FROM discussion WHERE pid = ? ORDER BY timestamp ASC");
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM discussion WHERE pid = ? ORDER BY timestamp DESC");
 		) {
 			ArrayList<DiscussionComment> discussion = new ArrayList<DiscussionComment>();
 			ResultSet result = null;

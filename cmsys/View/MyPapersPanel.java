@@ -214,9 +214,38 @@ public class MyPapersPanel extends javax.swing.JPanel {
         });
     }
 
-    private void viewPaperDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewPaperDetailsButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_viewPaperDetailsButtonActionPerformed
+    private void viewPaperDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
+        int pid = (int)(papersTable.getModel().getValueAt(selectedRow, 0));
+        Component me = this;
+        Dialog dialog = new Dialog(this, "Getting information...");
+        
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			private Paper paper = null;
+			
+			protected Void doInBackground() {
+				try {
+					paper = Paper.getPaperByPid(pid);
+					dialog.close();
+					
+				} catch (CmsysException e) {
+					dialog.close();
+					MessageBox.error("Unable to get the information needed.", me);
+				}
+				return null;
+			}
+			
+			protected void done() {
+				if (paper != null) {
+					Dialog dialog = new Dialog(me, new ShowPaperDetailsAuthorPanel(paper), "View paper", 0);
+					dialog.show();
+				}
+			}
+    	};
+    	
+    	worker.execute();
+    	dialog.show();
+    }
 
     private void responseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_responseButtonActionPerformed
         // TODO add your handling code here:
@@ -228,10 +257,10 @@ public class MyPapersPanel extends javax.swing.JPanel {
         Component me = this;
         Dialog dialog = new Dialog(this, "Getting information...");
         
-		SwingWorker<Paper, Void> worker = new SwingWorker<Paper, Void>() {
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 			private Paper paper = null;
 			
-			protected Paper doInBackground() {
+			protected Void doInBackground() {
 				try {
 					paper = Paper.getPaperByPid(pid);
 					dialog.close();
@@ -240,7 +269,7 @@ public class MyPapersPanel extends javax.swing.JPanel {
 					dialog.close();
 					MessageBox.error("Unable to get the information needed.", me);
 				}
-				return paper;
+				return null;
 			}
 			
 			protected void done() {
@@ -362,7 +391,7 @@ public class MyPapersPanel extends javax.swing.JPanel {
     private javax.swing.JLabel submissionDeadlineLabel;
     private javax.swing.JButton submitFinalVersionButton;
     private javax.swing.JButton viewPaperDetailsButton;
-    private Dialog viewPaperDetailsDialog, submitDialog, submitFinalVersionDialog;
+    private Dialog submitDialog, submitFinalVersionDialog;
     private javax.swing.table.DefaultTableModel model;
     private User user;
 }

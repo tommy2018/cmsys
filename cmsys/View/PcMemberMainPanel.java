@@ -2,7 +2,8 @@ package cmsys.View;
 
 public class PcMemberMainPanel extends javax.swing.JPanel {
 
-    public PcMemberMainPanel() {
+	private static final long serialVersionUID = 4393487725248070121L;
+	public PcMemberMainPanel() {
         initComponents();
     }
 
@@ -23,7 +24,8 @@ public class PcMemberMainPanel extends javax.swing.JPanel {
         latestEventsDesLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         latestEventsDesLabel.setText("Latest events:");
 
-        mainTabbedPane.addTab("Review", new PcMemberReviewPanel());
+        //mainTabbedPane.addTab("Review", new PcMemberReviewPanel());
+        mainTabbedPane.addTab("Review", new PcMemberReviewPreferencePanel());
 
         mainTabbedPane.addTab("My details", new MyDetailsPanel());
 
@@ -68,14 +70,12 @@ public class PcMemberMainPanel extends javax.swing.JPanel {
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel latestEventsDesLabel;
     private javax.swing.JScrollPane latestEventsScrollPane;
     private javax.swing.JTextArea latestEventsTextArea;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
-    // End of variables declaration//GEN-END:variables
 }

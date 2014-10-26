@@ -77,12 +77,31 @@ public class Paper {
 		return hashWOH;
 	}
 	
-	public void accept() {
-		
+	static public void accept(int pid) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		try (
+			PreparedStatement statement = conn.prepareStatement("UPDATE paper SET status = 2 WHERE pid = ?");
+		) {
+			statement.setInt(1, pid);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
 	}
 	
-	public void decline() {
+	static public void decline(int pid) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
 		
+		try (
+			PreparedStatement statement = conn.prepareStatement("UPDATE paper SET status = 4 WHERE pid = ?");
+		) {
+			statement.setInt(1, pid);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
 	}
 	
 	static public ArrayList<Paper> getPaperListByUid(int uid) throws CmsysException {
@@ -173,7 +192,7 @@ public class Paper {
 		 Settings settings = Settings.getInstance();
 		 Connection conn = settings.getDBConnection();
 		 try (
-			PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper JOIN distribution USING(pid, uid) WHERE uid = ? AND status = 5");
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper JOIN distribution USING(pid, uid) WHERE uid = ? AND paper.status = 5 AND distribution.status = 0");
 		 ) {
 				ArrayList<Paper> paperList = new ArrayList<Paper>();
 				ResultSet result = null;

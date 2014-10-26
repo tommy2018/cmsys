@@ -1,5 +1,9 @@
 package cmsys.PaperManagement;
 
+import cmsys.Common.CmsysException;
+import cmsys.Common.Time;
+import cmsys.UserManagement.User;
+
 public class DiscussionComment {
 	private int uid;
 	private String content;
@@ -27,5 +31,21 @@ public class DiscussionComment {
 	
 	public long getTimestamp() {
 		return timestamp;
+	}
+	
+	public String toString() {
+		String string;
+		
+		string = Time.toDate(timestamp) + "\n";
+		
+		try {
+			string += User.getUserByUid(uid).getUsername() + ":\n";
+		} catch (CmsysException e) {}
+		
+		string += "--------------------\n";
+		string += content + "\n";
+		string += "--------------------\n\n";
+		
+		return string;
 	}
 }

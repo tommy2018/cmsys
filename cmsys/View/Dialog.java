@@ -43,6 +43,16 @@ public class Dialog {
 		dialog.setLocationRelativeTo(parent);
 	}
 	
+	public Dialog(Component parent, JPanel panel, String title, int n) {
+		dialog = new JDialog();
+		dialog.setTitle(title);
+		dialog.setResizable(false);
+		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		dialog.add(panel);
+		dialog.pack();
+		dialog.setLocationRelativeTo(parent);
+	}
+	
 	public void show() {
     	dialog.setVisible(true);
 	}
