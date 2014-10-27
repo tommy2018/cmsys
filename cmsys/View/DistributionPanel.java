@@ -1,9 +1,29 @@
 package cmsys.View;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
+
+import cmsys.Common.CmsysException;
+import cmsys.PaperManagement.Distribution;
+import cmsys.PaperManagement.Paper;
+import cmsys.UserManagement.User;
+
 public class DistributionPanel extends javax.swing.JPanel {
 
-    public DistributionPanel() {
+	private static final long serialVersionUID = -1545135391742887910L;
+	public DistributionPanel() {
         initComponents();
+        try {
+			dmap = Distribution.getDistributionList();
+		} catch (CmsysException e) {}
+        updateTable();
     }
 
     private void initComponents() {
@@ -89,7 +109,10 @@ public class DistributionPanel extends javax.swing.JPanel {
                     .addComponent(applyChangesButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-    }// </editor-fold>//GEN-END:initComponents
+        addButton.setEnabled(false);
+        removeButton.setEnabled(false);
+        closeButton.setVisible(false);
+    }
 
     private void applyChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyChangesButtonActionPerformed
         // TODO add your handling code here:
@@ -107,6 +130,40 @@ public class DistributionPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_addButtonActionPerformed
 
+    
+    private void updateTable() {
+    	DefaultMutableTreeNode top = new DefaultMutableTreeNode("Papers");
+    	Iterator it = dmap.entrySet().iterator();
+    	
+    	while (it.hasNext()) {
+    		Map.Entry pairs = (Map.Entry)it.next();
+    		ArrayList<Integer> temp = (ArrayList<Integer>) pairs.getValue();
+    		String title = "";
+    		
+    		try {
+				title = Paper.getPaperByPid((int)(pairs.getKey())).getTitle();
+			} catch (CmsysException e1) {}
+    		
+    		DefaultMutableTreeNode node = new DefaultMutableTreeNode("Pid: " + (int)(pairs.getKey()) + " Title: " +title);
+    		
+    		for (Integer uid: temp) {
+    			String userName = "";
+    			
+				try {
+					userName = User.getUserByUid(uid).getUsername();
+				} catch (CmsysException e) {}
+				
+    			DefaultMutableTreeNode node2 = new DefaultMutableTreeNode("Username: " + userName);
+    			node.add(node2);
+    		}
+    		
+    		top.add(node);
+    	}
+    	
+    	model = new DefaultTreeModel(top);
+    	distributionTree.setModel(model);
+    	distributionTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    }
 
     private javax.swing.JButton addButton;
     private javax.swing.JButton applyChangesButton;
@@ -115,4 +172,6 @@ public class DistributionPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane distributionScrollPane;
     private javax.swing.JTree distributionTree;
     private javax.swing.JButton removeButton;
+    private DefaultTreeModel model;
+    private HashMap<Integer, ArrayList<Integer>> dmap;
 }

@@ -1,5 +1,8 @@
 package cmsys.View;
 
+import cmsys.Common.CmsysException;
+import cmsys.Common.Settings;
+
 public class PcChairMainPanel extends javax.swing.JPanel {
 
     public PcChairMainPanel() {
@@ -17,7 +20,16 @@ public class PcChairMainPanel extends javax.swing.JPanel {
         latestEventsDesLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         latestEventsDesLabel.setText("Latest events:");
 
-        mainTabbedPane.addTab("Papers", new PapersPanel());
+        try {
+        	int status = Integer.parseInt(Settings.getSettingFromDB("status"));
+        	
+			if (status == 2){
+				mainTabbedPane.addTab("Distribution", new DistributionPanel());
+			} else {
+				mainTabbedPane.addTab("Papers", new PapersPanel());
+			}
+			
+		}catch (CmsysException e) {}
 
         mainTabbedPane.addTab("My details", new MyDetailsPanel());
 

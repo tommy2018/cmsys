@@ -65,10 +65,6 @@ public class MyPapersPanel extends javax.swing.JPanel {
         
         papersTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         
-        try {
-			updateTable();
-		} catch (CmsysException e) {}
-        
         papersScrollPane.setViewportView(papersTable);
 
         responseButton.setText("Response to the reviews");
@@ -163,6 +159,10 @@ public class MyPapersPanel extends javax.swing.JPanel {
                     .addComponent(submitFinalVersionButton))
                 .addGap(24, 24, 24))
         );
+        
+        try {
+			updateTable();
+		} catch (CmsysException e) {}
         
         submitFinalVersionButton.setEnabled(false);
         viewPaperDetailsButton.setEnabled(false);
@@ -303,12 +303,20 @@ public class MyPapersPanel extends javax.swing.JPanel {
     }
     
     private void updateTable() throws CmsysException {
-    	if (Time.timestamp() > Long.parseLong(Settings.getSettingFromDB("submissionDeadline"))) {
+    	if (Integer.parseInt(Settings.getSettingFromDB("status")) != 0) {
     		submissionDeadlineLabel.setText("Submission date has already passed");
     		submissionDeadlineLabel.setForeground(Color.red);
     		submitButton.setEnabled(false);
-    	} else
+    	} else if (Time.timestamp() > Long.parseLong(Settings.getSettingFromDB("submissionDeadline"))) {
+    		submissionDeadlineLabel.setText("Submission date has already passed");
+    		submissionDeadlineLabel.setForeground(Color.red);
+    		submitButton.setEnabled(false);
+    		Settings.updateSetting("status", "1");
+    	} else {
+    		submitButton.setEnabled(true);
+    		submissionDeadlineLabel.setForeground(Color.black);
     		submissionDeadlineLabel.setText("Submission deadline: " + Time.toDate(Long.parseLong(Settings.getSettingFromDB("submissionDeadline"))));
+    	}
     	
     	Object[][] paperObj = null;
     	ArrayList<Paper> paperList = Paper.getPaperListByUid(user.getUID());

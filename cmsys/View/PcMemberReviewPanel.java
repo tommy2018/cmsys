@@ -17,7 +17,6 @@ import cmsys.PaperManagement.Paper;
 import cmsys.PaperManagement.Status;
 import cmsys.UserManagement.User;
 
-
 public class PcMemberReviewPanel extends javax.swing.JPanel {
 
     public PcMemberReviewPanel() {

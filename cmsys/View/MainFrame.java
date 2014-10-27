@@ -32,9 +32,14 @@ public class MainFrame extends javax.swing.JFrame {
 
         loginAsDesLabel.setText("Login as: ");
         
-        mainPanel.add(new PcMemberMainPanel(),BorderLayout.LINE_START);
-        //mainPanel.add(new PcChairMainPanel(),BorderLayout.LINE_START);
-        //mainPanel.add(new NormalUserMainPanel(),BorderLayout.LINE_START);
+        if (user.getRole() == 1 || user.getRole() == 2)
+        	mainPanel.add(new NormalUserMainPanel(),BorderLayout.LINE_START);
+        else if (user.getRole() == 3 )
+        	mainPanel.add(new PcMemberMainPanel(),BorderLayout.LINE_START);
+        else if (user.getRole() == 4)
+        	mainPanel.add(new PcChairMainPanel(),BorderLayout.LINE_START);
+        else if (user.getRole() == 0)
+        	mainPanel.add(new AdminMainPanel(),BorderLayout.LINE_START);
 
         loginAsLabel.setText(user.getUsername());
 

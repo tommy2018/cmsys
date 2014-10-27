@@ -1,24 +1,20 @@
 package cmsys.View;
 
-import cmsys.Common.CmsysException;
-import cmsys.Common.Settings;
+public class AdminMainPanel extends javax.swing.JPanel {
 
-public class PcMemberMainPanel extends javax.swing.JPanel {
 
-	private static final long serialVersionUID = 4393487725248070121L;
-	public PcMemberMainPanel() {
+    public AdminMainPanel() {
         initComponents();
     }
 
     private void initComponents() {
 
-        mainPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         latestEventsScrollPane = new javax.swing.JScrollPane();
         latestEventsTextArea = new javax.swing.JTextArea();
         latestEventsDesLabel = new javax.swing.JLabel();
         mainTabbedPane = new javax.swing.JTabbedPane();
 
-        latestEventsTextArea.setEditable(false);
         latestEventsTextArea.setColumns(20);
         latestEventsTextArea.setRows(5);
         latestEventsScrollPane.setViewportView(latestEventsTextArea);
@@ -27,41 +23,31 @@ public class PcMemberMainPanel extends javax.swing.JPanel {
         latestEventsDesLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         latestEventsDesLabel.setText("Latest events:");
 
-        try {
-        	int status = Integer.parseInt(Settings.getSettingFromDB("status"));
-        	
-			if (status == 1){
-				mainTabbedPane.addTab("Review", new PcMemberReviewPreferencePanel());
-			} else if (status == 3) {
-				mainTabbedPane.addTab("Review", new PcMemberReviewPanel());
-			} else {
-				MessageBox.information("Submission in progress, no action available at the moment", this);
-			}
-			
-		}catch (CmsysException e) {}
-        
+
+        mainTabbedPane.addTab("User management", new UserManagementPanel());
+        mainTabbedPane.addTab("System settings", new SystemSettingsPanel());
         mainTabbedPane.addTab("My details", new MyDetailsPanel());
 
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(latestEventsDesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(latestEventsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(mainTabbedPane)
                 .addContainerGap())
         );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(mainTabbedPane)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(latestEventsDesLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(latestEventsScrollPane)))
@@ -74,21 +60,21 @@ public class PcMemberMainPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }
 
 
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel latestEventsDesLabel;
     private javax.swing.JScrollPane latestEventsScrollPane;
     private javax.swing.JTextArea latestEventsTextArea;
-    private javax.swing.JPanel mainPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
 }

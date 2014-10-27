@@ -9,6 +9,7 @@ import cmsys.PaperManagement.*;
 import cmsys.UserManagement.User;
 import cmsys.Common.*;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.io.*;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class SubmitPanel extends javax.swing.JPanel {
 	
 	private static final long serialVersionUID = -5278755803015801659L;
 	public SubmitPanel(Component parent) {
+		userDefault = UserDefault.getInstance();
+		
 		keywordsModel = new DefaultTableModel(null, new String[] {"Keyword"});
 		authorsModel = new DefaultTableModel(null, new String[] {"First name", "Last name"});
 		this.parent = parent;
@@ -332,11 +335,16 @@ public class SubmitPanel extends javax.swing.JPanel {
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	try {
-			if (Time.timestamp() > Long.parseLong(Settings.getSettingFromDB("submissionDeadline"))) {
-				submitButton.setEnabled(true);
-				MessageBox.error("The submission date has already passed.", this);
-				return;
-			}
+    		if (Integer.parseInt(Settings.getSettingFromDB("status")) != 0) {
+    			MessageBox.error("Submission date expired", this);
+    			((MyPapersPanel)parent).closeSubmitDialog(true);
+    			return;
+        	} else if (Time.timestamp() > Long.parseLong(Settings.getSettingFromDB("submissionDeadline"))) {
+        		Settings.updateSetting("status", "1");
+        		MessageBox.error("Submission date expired", this);
+        		((MyPapersPanel)parent).closeSubmitDialog(true);
+        		return;
+        	}
 		} catch (Exception e) {}
     	
     	UserDefault userDefault = UserDefault.getInstance();
@@ -438,4 +446,5 @@ public class SubmitPanel extends javax.swing.JPanel {
     private File pdfFileWH, pdfFileWOH;
     DefaultTableModel authorsModel, keywordsModel;
     Component parent;
+    private UserDefault userDefault;
 }

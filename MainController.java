@@ -1,34 +1,24 @@
 import cmsys.Common.*;
-import cmsys.UserManagement.*;
-import cmsys.PaperManagement.*;
 import cmsys.View.*;
-
 import javax.swing.*;
 
-import java.util.*;
-import java.io.*;
-
-public class MainController {
+public class MainController {	
 	static public void main(String[] args) {
+		@SuppressWarnings("unused")
 		Settings settings = null;
 		
 		try {
-			UserDefault userDefault = UserDefault.getInstance();
-			User user = null;
-			
 			settings = Settings.getInstance();
-			user = User.getUserByUid(1);
-			userDefault.putObj("user", user);
 			
-			//Login frame
+			JFrame loginFrame = new JFrame("Login");
 			
-			//Main frame
-			JFrame frame = new MainFrame();
-					
-			frame.pack();
-			frame.setVisible(true);
+			loginFrame.add(new LoginPanel(loginFrame));
+			
+			loginFrame.pack();
+			loginFrame.setLocationRelativeTo(null);
+			loginFrame.setVisible(true);
 		} catch (CmsysException e) {
-			System.err.println(e.getMessage());
+			MessageBox.error(e.getMessage(), null);
 		}
 	}
 }

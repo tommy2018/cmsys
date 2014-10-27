@@ -93,4 +93,21 @@ public class Settings {
 		}
 
 	}
+	
+	static public void updateSetting(String key, String value) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+
+		try (
+				PreparedStatement statement = conn.prepareStatement("UPDATE setting SET value = ? WHERE item = ?");
+		) {
+			statement.setString(1, value);
+			statement.setString(2, key);
+			statement.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+
+	}
 }
