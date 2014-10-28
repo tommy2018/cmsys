@@ -1,6 +1,7 @@
 package cmsys.View;
 
 import cmsys.Common.CmsysException;
+import cmsys.Common.CronJob;
 import cmsys.Common.Settings;
 
 public class PcChairMainPanel extends javax.swing.JPanel {
@@ -21,6 +22,7 @@ public class PcChairMainPanel extends javax.swing.JPanel {
         latestEventsDesLabel.setText("Latest events:");
 
         try {
+        	CronJob.updateSystemStatus();
         	int status = Integer.parseInt(Settings.getSettingFromDB("status"));
         	
 			if (status == 2){

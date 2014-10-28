@@ -1,12 +1,19 @@
 package cmsys.View;
 
 import cmsys.Common.CmsysException;
+import cmsys.Common.CronJob;
 import cmsys.Common.Settings;
+import cmsys.Common.UserDefault;
+import cmsys.PaperManagement.Preference;
+import cmsys.UserManagement.User;
 
 public class PcMemberMainPanel extends javax.swing.JPanel {
 
 	private static final long serialVersionUID = 4393487725248070121L;
 	public PcMemberMainPanel() {
+		UserDefault userDefault = UserDefault.getInstance();
+		
+		user = (User)(userDefault.getObj("user"));
         initComponents();
     }
 
@@ -28,17 +35,25 @@ public class PcMemberMainPanel extends javax.swing.JPanel {
         latestEventsDesLabel.setText("Latest events:");
 
         try {
-        	int status = Integer.parseInt(Settings.getSettingFromDB("status"));
+        	CronJob.updateSystemStatus();
         	
-			if (status == 1){
-				mainTabbedPane.addTab("Review", new PcMemberReviewPreferencePanel());
+        	int status = Integer.parseInt(Settings.getSettingFromDB("status"));
+        	boolean made = Preference.hasMadePreference(user.getUID());
+        	
+			if (status == 1) {
+				if (made)
+					MessageBox.information("You have made you decision. Please wait for PC Chair to make final changes.", this);
+				else
+					mainTabbedPane.addTab("Review", new PcMemberReviewPreferencePanel());
 			} else if (status == 3) {
 				mainTabbedPane.addTab("Review", new PcMemberReviewPanel());
 			} else {
-				MessageBox.information("Submission in progress, no action available at the moment", this);
+				MessageBox.information("No action available at the moment", this);
 			}
 			
-		}catch (CmsysException e) {}
+		}catch (CmsysException e) {
+			MessageBox.information(e.getMessage(), this);
+		}
         
         mainTabbedPane.addTab("My details", new MyDetailsPanel());
 
@@ -91,4 +106,5 @@ public class PcMemberMainPanel extends javax.swing.JPanel {
     private javax.swing.JTextArea latestEventsTextArea;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
+    private User user;
 }

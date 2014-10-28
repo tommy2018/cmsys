@@ -13,10 +13,12 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import cmsys.Common.CmsysException;
+import cmsys.Common.CronJob;
 import cmsys.Common.Settings;
 import cmsys.Common.Time;
 import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.Paper;
+import cmsys.PaperManagement.Review;
 import cmsys.PaperManagement.Status;
 import cmsys.UserManagement.User;
 
@@ -177,9 +179,15 @@ public class PapersPanel extends javax.swing.JPanel {
 		        int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
 		        int status = Status.toInt((String)(papersTable.getModel().getValueAt(selectedRow, 2)));
 		        switch (status) {
+		        	case 2:
+		        	case 3:
+		        	case 4:
+		        		viewPaperDetailsButton.setEnabled(true);
+		        		break;
 					case 6:
 						acceptButton.setEnabled(true);
 						declineButton.setEnabled(true);
+						viewPaperDetailsButton.setEnabled(true);
 						break;
 				}
 				
@@ -252,16 +260,61 @@ public class PapersPanel extends javax.swing.JPanel {
     	dialog.show();
     }
 
-    private void viewPaperDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewPaperDetailsButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_viewPaperDetailsButtonActionPerformed
+    private void viewPaperDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
+        int pid = (int)(papersTable.getModel().getValueAt(selectedRow, 0));
+        Component me = this;
+        Dialog dialog = new Dialog(this, "Getting information...");
+        
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			private Paper paper = null;
+			ArrayList<Review> reviewList = null;
+			boolean success = false;
+			
+			protected Void doInBackground() {
+				try {
+					reviewList = new ArrayList<Review>();
+					paper = Paper.getPaperByPid(pid);
+					reviewList = Review.getReviewListByPid(paper.getPid());
+					success = true;
+					dialog.close();
+				} catch (CmsysException e) {
+					dialog.close();
+					MessageBox.error("Unable to get the information needed.", me);
+				}
+				return null;
+			}
+			
+			protected void done() {
+				if (success) {
+					Dialog viewReviewDialog = new Dialog(me, new ViewResponsePanel(paper, reviewList), "View response", 0);
+					viewReviewDialog.show();
+				}
+			}
+    	};
+    	
+    	worker.execute();
+    	dialog.show();
+    }
 
 
     private void updateTable() throws CmsysException {
-    	if (Time.timestamp() > Long.parseLong(Settings.getSettingFromDB("submissionDeadline"))) {
-    		statusLabel.setText("Status: Revewing");
-    	} else
+    	CronJob.updateSystemStatus();
+    	int status = Integer.parseInt(Settings.getSettingFromDB("status"));
+    	
+    	if (status == 0) {
     		statusLabel.setText("Status: Accepting submission");
+    	} else if (status == 1) {
+    		statusLabel.setText("Status: Awaiting PC Members' preferences");
+    	} else if (status == 2) {
+    		MessageBox.warning("System status changed, restart required.", this);
+    		System.exit(0);
+    	} else if (status == 6) {
+    		statusLabel.setText("Status: Finalised");
+    	} else {
+    		statusLabel.setText("Status: Normal");
+    	}
+    	
     	Object[][] paperObj = null;
     	ArrayList<Paper> paperList = Paper.getPaperList();
     	

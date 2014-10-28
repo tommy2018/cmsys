@@ -1,5 +1,6 @@
 package cmsys.View;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 
@@ -11,6 +12,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
 import cmsys.Common.CmsysException;
+import cmsys.Common.CronJob;
+import cmsys.Common.Settings;
+import cmsys.Common.Time;
 import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.Paper;
 import cmsys.PaperManagement.Preference;
@@ -116,6 +120,26 @@ public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
     }
     
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	try {
+    		boolean made = Preference.hasMadePreference(user.getUID());
+    		
+    		if (made) {
+    			MessageBox.error("You have already made your decision.", this);
+    			submitButton.setEnabled(false);
+    			updateTable();
+    			return;
+    		}
+    		
+    		CronJob.updateSystemStatus();
+    		
+    		if (Integer.parseInt(Settings.getSettingFromDB("status")) != 1) {
+    			MessageBox.error("Submission date expired", this);
+    			submitButton.setEnabled(false);
+    			updateTable();
+    			return;
+        	}
+		} catch (Exception e) {}
+    	
     	Component me = this;
         Dialog dialog = new Dialog(this, "Applying changes...");
         
@@ -132,9 +156,9 @@ public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
 						preference.setUid(user.getUID());
 						
 						if (temp.equals("Maybe"))
-							preference.setPreference(2);
-						else if (temp.equals("Yes"))
 							preference.setPreference(0);
+						else if (temp.equals("Yes"))
+							preference.setPreference(2);
 						else
 							preference.setPreference(1);
 						
@@ -142,7 +166,7 @@ public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
 					}
 					
 					Preference.setPreference(preferenceList);
-					
+					updateTable();
 					dialog.close();
 					submitButton.setEnabled(false);
 					MessageBox.information("Done.", me);
@@ -193,6 +217,20 @@ public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
     }
     
     private void updateTable() throws CmsysException {
+    	CronJob.updateSystemStatus();
+    	int status = Integer.parseInt(Settings.getSettingFromDB("status"));
+    	
+    	if (status != 1) {
+    		deadlineLabel.setText("Submission date has already passed");
+    		deadlineLabel.setForeground(Color.red);
+    		submitButton.setEnabled(false);
+    		MessageBox.warning("System status changed, restart required", this);
+    		System.exit(0);
+    	} else {
+    		submitButton.setEnabled(true);
+    		deadlineLabel.setForeground(Color.black);
+    		deadlineLabel.setText("Submission deadline: " + Time.toDate(Long.parseLong(Settings.getSettingFromDB("preferenceDeadline"))));
+    	}
     	
     	Object[][] paperObj = null;
     	ArrayList<Paper> paperList = Paper.getPaperList();
@@ -220,6 +258,11 @@ public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
     	decisionComboBox.setModel(new javax.swing.DefaultComboBoxModel<String>(new String[] { "Yes", "No", "Maybe" }));
     	TableColumn preferenceColumn = papersTable.getColumnModel().getColumn(2);
     	preferenceColumn.setCellEditor(new DefaultCellEditor(decisionComboBox));
+    	
+    	if (status != 1 || Preference.hasMadePreference(user.getUID())) {
+    		papersTable.removeColumn(preferenceColumn);
+    		papersTable.setEnabled(false);
+    	}
     }
 
     private javax.swing.JLabel deadlineLabel;

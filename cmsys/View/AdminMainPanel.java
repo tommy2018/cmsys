@@ -2,8 +2,8 @@ package cmsys.View;
 
 public class AdminMainPanel extends javax.swing.JPanel {
 
-
-    public AdminMainPanel() {
+	private static final long serialVersionUID = -7532613715890438420L;
+	public AdminMainPanel() {
         initComponents();
     }
 

@@ -39,6 +39,44 @@ public class Distribution {
 		this.deadline = deadline;
 	}
 	
+	static public void tempDistribute(int pid, int uid) throws CmsysException{
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("INSERT INTO tempDistribution(uid, pid) VALUES(?, ?)");
+		) {
+
+			statement.setInt(1, uid);
+			statement.setInt(2, pid);
+			
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}		
+	}
+	
+	static public void distribute(int pid, int uid, long expiryDate) throws CmsysException{
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("INSERT INTO distribution(uid, pid, deadline, status) VALUES(?, ?, ?, ?)");
+		) {
+
+			statement.setInt(1, uid);
+			statement.setInt(2, pid);
+			statement.setLong(3, expiryDate);
+			statement.setInt(4, 0);
+			
+			statement.executeUpdate();
+			
+			Paper.startToReview(pid);
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}		
+	}
+	
 	static public HashMap<Integer, ArrayList<Integer>> getDistributionList() throws CmsysException {
 		Settings settings = Settings.getInstance();
 		Connection conn = settings.getDBConnection();

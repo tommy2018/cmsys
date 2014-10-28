@@ -1,6 +1,12 @@
 package cmsys.View;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
+
+import cmsys.Common.CmsysException;
+import cmsys.PaperManagement.FileManager;
 import cmsys.PaperManagement.Paper;
 
 public class ShowPaperDetailsAuthorPanel extends javax.swing.JPanel {
@@ -129,17 +135,45 @@ public class ShowPaperDetailsAuthorPanel extends javax.swing.JPanel {
 		update();
     }
 
-    private void pdfWhButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdfWhButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_pdfWhButtonActionPerformed
+    private void pdfWhButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	JFileChooser fc = new JFileChooser();
+    	File file = null;
+    	
+    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	fc.showSaveDialog(this);
+    	
+    	if (fc != null) {
+    		file = fc.getSelectedFile();
+    		try {
+    			FileManager.getFile(paper.getHashWH(), file.getAbsolutePath());
+    			MessageBox.information("Saved to selected location", this);
+    		} catch (CmsysException e) {
+    			MessageBox.error("Cannot save the file", this);
+    		}
+    	}
+    }
 
-    private void pdfWohButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdfWohButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_pdfWohButtonActionPerformed
+    private void pdfWohButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	JFileChooser fc = new JFileChooser();
+    	File file = null;
+    	
+    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	fc.showSaveDialog(this);
+    	
+    	if (fc != null) {
+    		file = fc.getSelectedFile();
+    		try {
+    			FileManager.getFile(paper.getHashWOH(), file.getAbsolutePath());
+    			MessageBox.information("Saved to selected location", this);
+    		} catch (CmsysException e) {
+    			MessageBox.error("Cannot save the file", this);
+    		}
+    	}
+    }
 
-    private void reFormattedFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reFormattedFileButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_reFormattedFileButtonActionPerformed
+    private void reFormattedFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	
+    }
     
     private void update() {
     	Object[][] authorObj = null;

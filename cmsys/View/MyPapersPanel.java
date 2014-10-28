@@ -14,10 +14,12 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import cmsys.Common.CmsysException;
+import cmsys.Common.CronJob;
 import cmsys.Common.Settings;
 import cmsys.Common.Time;
 import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.Paper;
+import cmsys.PaperManagement.Review;
 import cmsys.PaperManagement.Status;
 import cmsys.UserManagement.User;
 
@@ -37,12 +39,12 @@ public class MyPapersPanel extends javax.swing.JPanel {
         submissionDeadlineLabel = new javax.swing.JLabel();
         jSeparatorTop = new javax.swing.JSeparator();
         filterDesLabel = new javax.swing.JLabel();
-        filterComboBox = new javax.swing.JComboBox();
+        filterComboBox = new javax.swing.JComboBox<String>();
         jSeparatorMid = new javax.swing.JSeparator();
         submitButton = new javax.swing.JButton();
         papersScrollPane = new javax.swing.JScrollPane();
         papersTable = new javax.swing.JTable();
-        responseButton = new javax.swing.JButton();
+        viewReviewButton = new javax.swing.JButton();
         submitFinalVersionButton = new javax.swing.JButton();
         viewPaperDetailsButton = new javax.swing.JButton();
         refreshButton = new javax.swing.JButton();
@@ -53,7 +55,7 @@ public class MyPapersPanel extends javax.swing.JPanel {
 
         filterDesLabel.setText("Filter:");
 
-        filterComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "Submitted", "Revewing", "Reviewed", "Awaiting response", "Awaiting final version submission", "Accepted", "Rejected" }));
+        filterComboBox.setModel(new javax.swing.DefaultComboBoxModel<String>(new String[] { "All", "Submitted", "Revewing", "Reviewed - Final approve needed", "Awaiting final version submission", "Accepted", "Rejected" }));
         
         submitButton.setText("+ Paper");
         submitButton.setToolTipText("");
@@ -67,10 +69,10 @@ public class MyPapersPanel extends javax.swing.JPanel {
         
         papersScrollPane.setViewportView(papersTable);
 
-        responseButton.setText("Response to the reviews");
-        responseButton.addActionListener(new java.awt.event.ActionListener() {
+        viewReviewButton.setText("View reviews");
+        viewReviewButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                responseButtonActionPerformed(evt);
+                viewReviewButtonActionPerformed(evt);
             }
         });
 
@@ -117,7 +119,7 @@ public class MyPapersPanel extends javax.swing.JPanel {
                             .addComponent(jSeparatorTop))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(responseButton)
+                        .addComponent(viewReviewButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(submitFinalVersionButton)
                         .addContainerGap(65, Short.MAX_VALUE))
@@ -155,7 +157,7 @@ public class MyPapersPanel extends javax.swing.JPanel {
                 .addComponent(viewPaperDetailsButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(responseButton)
+                    .addComponent(viewReviewButton)
                     .addComponent(submitFinalVersionButton))
                 .addGap(24, 24, 24))
         );
@@ -166,7 +168,7 @@ public class MyPapersPanel extends javax.swing.JPanel {
         
         submitFinalVersionButton.setEnabled(false);
         viewPaperDetailsButton.setEnabled(false);
-        responseButton.setEnabled(false);
+        viewReviewButton.setEnabled(false);
         
         filterComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -190,22 +192,24 @@ public class MyPapersPanel extends javax.swing.JPanel {
 				if (papersTable.getSelectedRow() == -1) {
 	            	submitFinalVersionButton.setEnabled(false);
 			        viewPaperDetailsButton.setEnabled(false);
-			        responseButton.setEnabled(false);
+			        viewReviewButton.setEnabled(false);
 			        return;
 				}
 				
 				submitFinalVersionButton.setEnabled(false);
 		        viewPaperDetailsButton.setEnabled(false);
-		        responseButton.setEnabled(false);
+		        viewReviewButton.setEnabled(false);
 		        
 		        int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
 		        int status = Status.toInt((String)(papersTable.getModel().getValueAt(selectedRow, 2)));
 		        switch (status) {
-					case 1:
-						responseButton.setEnabled(true);
+					case 3:
+					case 4:
+						viewReviewButton.setEnabled(true);
 						break;
 					case 2:
 						submitFinalVersionButton.setEnabled(true);
+						viewReviewButton.setEnabled(true);
 						break;
 				}
 				
@@ -247,9 +251,42 @@ public class MyPapersPanel extends javax.swing.JPanel {
     	dialog.show();
     }
 
-    private void responseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_responseButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_responseButtonActionPerformed
+    private void viewReviewButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
+        int pid = (int)(papersTable.getModel().getValueAt(selectedRow, 0));
+        Component me = this;
+        Dialog dialog = new Dialog(this, "Getting information...");
+        
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			private Paper paper = null;
+			ArrayList<Review> reviewList = null;
+			boolean success = false;
+			
+			protected Void doInBackground() {
+				try {
+					reviewList = new ArrayList<Review>();
+					paper = Paper.getPaperByPid(pid);
+					reviewList = Review.getReviewListByPid(paper.getPid());
+					success = true;
+					dialog.close();
+				} catch (CmsysException e) {
+					dialog.close();
+					MessageBox.error("Unable to get the information needed.", me);
+				}
+				return null;
+			}
+			
+			protected void done() {
+				if (success) {
+					Dialog viewReviewDialog = new Dialog(me, new ViewResponsePanel(paper, reviewList), "View response", 0);
+					viewReviewDialog.show();
+				}
+			}
+    	};
+    	
+    	worker.execute();
+    	dialog.show();
+    }
 
     private void submitFinalVersionButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	int selectedRow = papersTable.convertRowIndexToModel(papersTable.getSelectedRow());
@@ -303,15 +340,12 @@ public class MyPapersPanel extends javax.swing.JPanel {
     }
     
     private void updateTable() throws CmsysException {
+    	CronJob.updateSystemStatus();
+    	
     	if (Integer.parseInt(Settings.getSettingFromDB("status")) != 0) {
     		submissionDeadlineLabel.setText("Submission date has already passed");
     		submissionDeadlineLabel.setForeground(Color.red);
     		submitButton.setEnabled(false);
-    	} else if (Time.timestamp() > Long.parseLong(Settings.getSettingFromDB("submissionDeadline"))) {
-    		submissionDeadlineLabel.setText("Submission date has already passed");
-    		submissionDeadlineLabel.setForeground(Color.red);
-    		submitButton.setEnabled(false);
-    		Settings.updateSetting("status", "1");
     	} else {
     		submitButton.setEnabled(true);
     		submissionDeadlineLabel.setForeground(Color.black);
@@ -387,13 +421,13 @@ public class MyPapersPanel extends javax.swing.JPanel {
     		refreshTable();
     }
 
-    private javax.swing.JComboBox filterComboBox;
+    private javax.swing.JComboBox<String> filterComboBox;
     private javax.swing.JLabel filterDesLabel;
     private javax.swing.JSeparator jSeparatorMid;
     private javax.swing.JSeparator jSeparatorTop;
     private javax.swing.JScrollPane papersScrollPane;
     private javax.swing.JTable papersTable;
-    private javax.swing.JButton responseButton;
+    private javax.swing.JButton viewReviewButton;
     private javax.swing.JButton submitButton;
     private javax.swing.JButton refreshButton;
     private javax.swing.JLabel submissionDeadlineLabel;

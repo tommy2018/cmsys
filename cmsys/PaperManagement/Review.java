@@ -166,10 +166,12 @@ public class Review {
 			PreparedStatement statement = conn.prepareStatement("UPDATE distribution SET status = 1 WHERE pid = ? AND uid = ?");
 		) {
 			int uid, pid;
+			
 			uid = review.getUid();
 			pid = review.getPid();
-			statement.setInt(1, uid);
-			statement.setInt(2, pid);
+			System.out.println(uid + " "  + pid);
+			statement.setInt(1, pid);
+			statement.setInt(2, uid);
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			throw new CmsysException(24);

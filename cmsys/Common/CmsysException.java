@@ -24,6 +24,7 @@ public class CmsysException extends Exception {
 		messages.put(0, "Settings file format incorrect");
 		messages.put(1, "Settings file not found");
 		messages.put(2, "Unable to load the settings file");
+		messages.put(21, "Databased data error (Table: reviewerPreference)");
 		messages.put(24, "SQL Exception");
 		messages.put(31, "Unable to get the file");
 		messages.put(32, "Unable to save the file");

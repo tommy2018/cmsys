@@ -77,6 +77,32 @@ public class Paper {
 		return hashWOH;
 	}
 	
+	static public void startToReview(int pid) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		try (
+			PreparedStatement statement = conn.prepareStatement("UPDATE paper SET status = 5 WHERE pid = ?");
+		) {
+			statement.setInt(1, pid);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+	
+	static public void setToReviewed(int pid) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		try (
+			PreparedStatement statement = conn.prepareStatement("UPDATE paper SET status = 6 WHERE pid = ?");
+		) {
+			statement.setInt(1, pid);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+	
 	static public void accept(int pid) throws CmsysException {
 		Settings settings = Settings.getInstance();
 		Connection conn = settings.getDBConnection();
@@ -86,6 +112,7 @@ public class Paper {
 			statement.setInt(1, pid);
 			statement.executeUpdate();
 		} catch (SQLException e) {
+			System.out.println(e);
 			throw new CmsysException(24);
 		}
 	}
@@ -146,6 +173,26 @@ public class Paper {
 			}
 	}
 	
+	static public int getStatus(int pid) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("SELECT status FROM paper WHERE pid = ?");
+		) {
+			statement.setInt(1, pid);
+			ResultSet result = null;
+			result = statement.executeQuery();
+			
+			if (result.next())
+				return result.getInt("status");
+			else
+				return 0;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+	
 	static public ArrayList<Paper> getPaperList() throws CmsysException {
 		Settings settings = Settings.getInstance();
 		Connection conn = settings.getDBConnection();
@@ -192,7 +239,7 @@ public class Paper {
 		 Settings settings = Settings.getInstance();
 		 Connection conn = settings.getDBConnection();
 		 try (
-			PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper JOIN distribution USING(pid, uid) WHERE uid = ? AND paper.status = 5 AND distribution.status = 0");
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper JOIN distribution USING(pid) WHERE distribution.uid = ? AND paper.status = 5 AND distribution.status = 0");
 		 ) {
 				ArrayList<Paper> paperList = new ArrayList<Paper>();
 				ResultSet result = null;
@@ -226,6 +273,30 @@ public class Paper {
 				result.close();
 				return paperList;
 			} catch (SQLException e) {
+				throw new CmsysException(24);
+			}
+	}
+	
+	static public ArrayList<Integer> getReviewPaperList() throws CmsysException {
+		 Settings settings = Settings.getInstance();
+		 Connection conn = settings.getDBConnection();
+		 try (
+			PreparedStatement statement = conn.prepareStatement("SELECT DISTINCT(pid) c FROM distribution");
+		 ) {
+				ArrayList<Integer> paperList = new ArrayList<Integer>();
+				ResultSet result = null;
+
+				result = statement.executeQuery();
+					
+				while (result.next()) {
+					int temp = result.getInt("c");
+					paperList.add(temp);
+				}
+
+				result.close();
+				return paperList;
+			} catch (SQLException e) {
+				System.out.println(e);
 				throw new CmsysException(24);
 			}
 	}
@@ -265,6 +336,28 @@ public class Paper {
 
 				result.close();
 				return paper;
+			} catch (SQLException e) {
+				throw new CmsysException(24);
+			}
+	}
+	
+	static public boolean allReviewed(int pid) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+				PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper JOIN distribution USING(pid) HAVING COUNT(DISTINCT(distribution.status)) = 1 AND distribution.status = 1 AND paper.status = 5 AND pid = ?");
+		) {
+				ResultSet result = null;
+
+				statement.setInt(1, pid);
+				result = statement.executeQuery();
+				
+				if (result.next()) {
+					return true;
+				}
+				
+				return false;
 			} catch (SQLException e) {
 				throw new CmsysException(24);
 			}

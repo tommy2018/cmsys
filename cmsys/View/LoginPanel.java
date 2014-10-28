@@ -2,6 +2,7 @@ package cmsys.View;
 import javax.swing.JFrame;
 
 import cmsys.Common.CmsysException;
+import cmsys.Common.CronJob;
 import cmsys.Common.UserDefault;
 import cmsys.UserManagement.*;
 
@@ -26,8 +27,12 @@ public class LoginPanel extends javax.swing.JPanel {
         newUserDesLabel = new javax.swing.JLabel();
 
         signUpButton.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        signUpButton.setText("Sign up");
-
+        signUpButton.setText("For demo only (Close PC member preference selection)");
+        signUpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	CronJob.changeSystemStatusToDistribution();
+            }
+        });
         loginButton.setText("Login");
         loginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

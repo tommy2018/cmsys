@@ -335,15 +335,12 @@ public class SubmitPanel extends javax.swing.JPanel {
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	try {
+    		CronJob.updateSystemStatus();
+    		
     		if (Integer.parseInt(Settings.getSettingFromDB("status")) != 0) {
     			MessageBox.error("Submission date expired", this);
     			((MyPapersPanel)parent).closeSubmitDialog(true);
     			return;
-        	} else if (Time.timestamp() > Long.parseLong(Settings.getSettingFromDB("submissionDeadline"))) {
-        		Settings.updateSetting("status", "1");
-        		MessageBox.error("Submission date expired", this);
-        		((MyPapersPanel)parent).closeSubmitDialog(true);
-        		return;
         	}
 		} catch (Exception e) {}
     	

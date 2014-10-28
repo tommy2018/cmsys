@@ -1,19 +1,22 @@
 package cmsys.View;
 
 import java.awt.Component;
+import java.io.File;
 
+import javax.swing.JFileChooser;
 import javax.swing.SwingWorker;
 
 import cmsys.Common.CmsysException;
 import cmsys.Common.UserDefault;
+import cmsys.PaperManagement.FileManager;
 import cmsys.PaperManagement.Paper;
 import cmsys.PaperManagement.Review;
-import cmsys.PaperManagement.Submission;
 import cmsys.UserManagement.User;
 
 public class PcMemberReviewSubPanel extends javax.swing.JPanel {
-
-    public PcMemberReviewSubPanel(Component parent, Paper paper) {
+	
+	private static final long serialVersionUID = -3962486282054556836L;
+	public PcMemberReviewSubPanel(Component parent, Paper paper) {
     	UserDefault userDefault = UserDefault.getInstance();
     	
     	user = (User)userDefault.getObj("user");
@@ -367,9 +370,23 @@ public class PcMemberReviewSubPanel extends javax.swing.JPanel {
     	abstractTextArea.setText(paper.getPaperAbstract());
     }
 
-    private void getPdfButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getPdfButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_getPdfButtonActionPerformed
+    private void getPdfButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	JFileChooser fc = new JFileChooser();
+    	File file = null;
+    	
+    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	fc.showSaveDialog(this);
+    	
+    	if (fc != null) {
+    		file = fc.getSelectedFile();
+    		try {
+    			FileManager.getFile(paper.getHashWOH(), file.getAbsolutePath());
+    			MessageBox.information("Saved to selected location", this);
+    		} catch (CmsysException e) {
+    			MessageBox.error("Cannot save the file", this);
+    		}
+    	}
+    }
 
     private void openDiscussionBoardButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	Dialog dialog = new Dialog(this, new DiscussionPanel(paper), "Discussion", 0);

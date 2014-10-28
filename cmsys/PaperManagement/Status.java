@@ -5,8 +5,6 @@ public class Status {
 		switch (status) {
 			case 0:
 				return "Submitted";
-			case 1:
-				return "Awaiting response";
 			case 2:
 				return "Awaiting final version submission";
 			case 3:
@@ -16,9 +14,7 @@ public class Status {
 			case 5:
 				return "Revewing";
 			case 6:
-				return "Reviewed";
-			case 7:
-				return "Awaiting allocation";
+				return "Reviewed - Final approve needed";
 			default:
 				return "---";
 		}
@@ -27,8 +23,6 @@ public class Status {
 	static public int toInt(String status) {
 		if (status.equals("Submitted"))
 			return 0;
-		else if (status.equals("Awaiting response"))
-			return 1;
 		else if (status.equals("Awaiting final version submission"))
 			return 2;
 		else if (status.equals("Accepted"))
@@ -37,7 +31,7 @@ public class Status {
 			return 4;
 		else if (status.equals("Revewing"))
 			return 5;
-		else if (status.equals("Reviewed"))
+		else if (status.equals("Reviewed - Final approve needed"))
 			return 6;
 		else
 			return -1;

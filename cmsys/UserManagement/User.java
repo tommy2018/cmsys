@@ -17,6 +17,7 @@ public class User {
 	private String lastName;
 	private String email;
 	private String username;
+	private ArrayList<String> researchAreas;
 
 	public User(int uid, String username, String firstName, String lastName, String email, int role) {
 		this.uid = uid;
@@ -49,6 +50,10 @@ public class User {
 
 	public int getRole() {
 		return role;
+	}
+	
+	public ArrayList<String> getResearchAreas() {
+		return researchAreas;
 	}
 	
 	public void changePassword(String password) throws CmsysException {
@@ -90,6 +95,30 @@ public class User {
 			}
 			
 		 	return user;
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+	}
+	
+	static public ArrayList<User> getPcMemberList() throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM user WHERE role = 3");	
+		) {
+			ArrayList<User> list = new ArrayList<User>();
+		 	ResultSet result = null;
+		 	
+			result = statement.executeQuery();
+		 	
+			while (result.next()) {
+				User user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
+						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+				list.add(user);
+			}
+			
+		 	return list;
 		} catch (SQLException e) {
 			throw new CmsysException(24);
 		}
