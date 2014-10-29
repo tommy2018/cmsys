@@ -164,6 +164,21 @@ public class FinalSubmitPanel extends javax.swing.JPanel {
     }
 
     private void getTemplateFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	JFileChooser fc = new JFileChooser();
+    	File file = null;
+    	
+    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	fc.showSaveDialog(this);
+    	
+    	if (fc != null) {
+    		file = fc.getSelectedFile();
+    		try {
+    			FileManager.getFile("template.doc", file.getAbsolutePath());
+    			MessageBox.information("Saved to selected location", this);
+    		} catch (CmsysException e) {
+    			MessageBox.error("Cannot save the file", this);
+    		}
+    	}
     }
 
     private void selectFinalVersionButtonActionPerformed(java.awt.event.ActionEvent evt) {

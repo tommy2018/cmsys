@@ -21,11 +21,7 @@ public class MainFrame extends javax.swing.JFrame {
         jSeparatorTop = new javax.swing.JSeparator();
         mainPanel = new javax.swing.JPanel(new BorderLayout());
         loginAsLabel = new javax.swing.JLabel();
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        logoutMenuItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        manualMenuItem = new javax.swing.JMenuItem();
+       
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -43,29 +39,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         loginAsLabel.setText(user.getUsername());
 
-        fileMenu.setText("File");
 
-        logoutMenuItem.setText("Logout");
-        fileMenu.add(logoutMenuItem);
-
-        menuBar.add(fileMenu);
-
-        helpMenu.setText("Help");
-
-        manualMenuItem.setText("Manual");
-        manualMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                manualMenuItemActionPerformed(evt);
-            }
-        });
-        helpMenu.add(manualMenuItem);
 
         aboutMenuItem.setText("About");
-        helpMenu.add(aboutMenuItem);
-
-        menuBar.add(helpMenu);
-
-        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -100,19 +76,14 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }
 
-    private void manualMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-    }
 
 
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu helpMenu;
+
     private javax.swing.JSeparator jSeparatorTop;
     private javax.swing.JLabel loginAsDesLabel;
     private javax.swing.JLabel loginAsLabel;
-    private javax.swing.JMenuItem logoutMenuItem;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JMenuItem manualMenuItem;
-    private javax.swing.JMenuBar menuBar;
+
     private User user;
 }

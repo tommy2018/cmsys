@@ -110,4 +110,21 @@ public class Settings {
 		}
 
 	}
+	
+	static public void newSetting(String item, String value) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+
+		try (
+				PreparedStatement statement = conn.prepareStatement("INSERT INTO setting(value, item) VALUES(?, ?)");
+		) {
+			statement.setString(1, value);
+			statement.setString(2, item);
+			statement.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
+
+	}
 }
