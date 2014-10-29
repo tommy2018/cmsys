@@ -7,6 +7,7 @@ import javax.swing.table.DefaultTableModel;
 
 import cmsys.Common.CmsysException;
 import cmsys.PaperManagement.FileManager;
+import cmsys.PaperManagement.FinalPaper;
 import cmsys.PaperManagement.Paper;
 
 public class ShowPaperDetailsAuthorPanel extends javax.swing.JPanel {
@@ -15,6 +16,9 @@ public class ShowPaperDetailsAuthorPanel extends javax.swing.JPanel {
 	public ShowPaperDetailsAuthorPanel(Paper paper) {
 		this.paper = paper;
         initComponents();
+        reFormattedFileButton.setEnabled(false);
+        if (paper.getStatus() == 3)
+        	reFormattedFileButton.setEnabled(true);
     }
 
     private void initComponents() {
@@ -172,7 +176,21 @@ public class ShowPaperDetailsAuthorPanel extends javax.swing.JPanel {
     }
 
     private void reFormattedFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	JFileChooser fc = new JFileChooser();
+    	File file = null;
     	
+    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	fc.showSaveDialog(this);
+    	
+    	if (fc != null) {
+    		file = fc.getSelectedFile();
+    		try {
+    			FileManager.getFile(FinalPaper.getFinalPaperFileByPid(paper.getPid()), file.getAbsolutePath());
+    			MessageBox.information("Saved to selected location", this);
+    		} catch (CmsysException e) {
+    			MessageBox.error("Cannot save the file", this);
+    		}
+    	}
     }
     
     private void update() {

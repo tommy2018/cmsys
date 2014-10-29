@@ -15,7 +15,6 @@ import javax.swing.table.TableRowSorter;
 import cmsys.Common.CmsysException;
 import cmsys.Common.CronJob;
 import cmsys.Common.Settings;
-import cmsys.Common.Time;
 import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.Paper;
 import cmsys.PaperManagement.Review;
@@ -32,7 +31,8 @@ public class PapersPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    private void initComponents() {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private void initComponents() {
 
         papersScrollPane = new javax.swing.JScrollPane();
         papersTable = new javax.swing.JTable();
@@ -71,7 +71,7 @@ public class PapersPanel extends javax.swing.JPanel {
             }
         });
 
-        filterComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "Submitted", "Revewing", "Reviewed", "Awaiting response", "Awaiting final version submission", "Accepted", "Rejected" }));
+        filterComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "Submitted", "Revewing", "Reviewed - Final approve needed", "Awaiting final version submission", "Accepted", "Rejected" }));
 
         filterDesLabel.setText("Filter:");
 
@@ -243,7 +243,7 @@ public class PapersPanel extends javax.swing.JPanel {
 					paper = Paper.getPaperByPid(pid);
 					Paper.decline(paper.getPid());
 					dialog.close();
-					MessageBox.information("Paper accepted.", me);
+					MessageBox.information("Paper declined.", me);
 				} catch (CmsysException e) {
 					dialog.close();
 					MessageBox.error("Unable to perform this action.", me);
@@ -273,9 +273,11 @@ public class PapersPanel extends javax.swing.JPanel {
 			
 			protected Void doInBackground() {
 				try {
-					reviewList = new ArrayList<Review>();
 					paper = Paper.getPaperByPid(pid);
-					reviewList = Review.getReviewListByPid(paper.getPid());
+					if (paper.getStatus() == 6 || paper.getStatus() == 2 || paper.getStatus() == 3 || paper.getStatus() == 4) {
+						reviewList = new ArrayList<Review>();
+						reviewList = Review.getReviewListByPid(paper.getPid());
+					}
 					success = true;
 					dialog.close();
 				} catch (CmsysException e) {
@@ -287,8 +289,16 @@ public class PapersPanel extends javax.swing.JPanel {
 			
 			protected void done() {
 				if (success) {
-					Dialog viewReviewDialog = new Dialog(me, new ViewResponsePanel(paper, reviewList), "View response", 0);
-					viewReviewDialog.show();
+					if (paper.getStatus() == 6 || paper.getStatus() == 2 || paper.getStatus() == 3 || paper.getStatus() == 4) {
+						Dialog viewReviewDialog = new Dialog(me, new ViewResponsePanel(paper, reviewList), "View response", 100);
+						Dialog dialog = new Dialog(me, new ShowPaperDetailsAuthorPanel(paper), "View paper", 100);
+						dialog.show();
+						viewReviewDialog.show();
+					} else {
+						Dialog dialog = new Dialog(me, new ShowPaperDetailsAuthorPanel(paper), "View paper", 0);
+						dialog.show();
+					}
+					
 				}
 			}
     	};
@@ -307,8 +317,8 @@ public class PapersPanel extends javax.swing.JPanel {
     	} else if (status == 1) {
     		statusLabel.setText("Status: Awaiting PC Members' preferences");
     	} else if (status == 2) {
-    		MessageBox.warning("System status changed, restart required.", this);
-    		System.exit(0);
+    		//MessageBox.warning("System status changed, restart required.", this);
+    		//System.exit(0);
     	} else if (status == 6) {
     		statusLabel.setText("Status: Finalised");
     	} else {
@@ -352,7 +362,8 @@ public class PapersPanel extends javax.swing.JPanel {
 			
 			protected void done() {
 				RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
-        			public boolean include(Entry entry) {
+        			@SuppressWarnings("rawtypes")
+					public boolean include(Entry entry) {
         				String status = (String)entry.getValue(2);
         				if (((String)(filterComboBox.getSelectedItem())).equals("All"))
         					return true;
@@ -373,7 +384,8 @@ public class PapersPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
     private javax.swing.JButton declineButton;
-    private javax.swing.JComboBox filterComboBox;
+    @SuppressWarnings("rawtypes")
+	private javax.swing.JComboBox filterComboBox;
     private javax.swing.JLabel filterDesLabel;
     private javax.swing.JSeparator jSeparatorMid;
     private javax.swing.JSeparator jSeparatorTop;

@@ -1,6 +1,6 @@
 package cmsys.PaperManagement;
 
-public class Author {
+public class Author{
 	private String firstName;
 	private String lastName;
 	
@@ -32,5 +32,19 @@ public class Author {
 	
 	public String getName() {
 		return lastName + ", " + firstName;
+	}
+	
+	public int hashCode() {             
+        String temp = firstName + lastName;
+        return temp.hashCode();
+    }
+	
+	@Override
+	public boolean equals(Object o) {
+		Author author = (Author)o;
+		if (firstName.equals(author.firstName) && lastName.equals(author.lastName))
+			return true;
+		else
+			return false;
 	}
 }

@@ -2,6 +2,7 @@ package cmsys.Common;
 
 import java.util.ArrayList;
 
+import cmsys.PaperManagement.Check;
 import cmsys.PaperManagement.Distribution;
 import cmsys.PaperManagement.Paper;
 import cmsys.PaperManagement.Preference;
@@ -50,7 +51,10 @@ public class CronJob {
 			for (Paper paper : paperList) {
 				for (User user : pmList) {
 					if (Preference.getPreference(user.getUID(), paper.getPid()) == null) {
-						Preference.setPreference(user.getUID(), paper.getPid(), 0);
+						if (Check.isCOI(paper, user))
+							Preference.setPreference(user.getUID(), paper.getPid(), 3);
+						else
+							Preference.setPreference(user.getUID(), paper.getPid(), 0);
 					}
 				}
 			}

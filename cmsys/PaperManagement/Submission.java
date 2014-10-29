@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.io.*;
 
 import cmsys.Common.*;
+import cmsys.UserManagement.User;
 
 public class Submission {
 	static public void submitPaper(int uid, String title, String paperAbstract, ArrayList<Author>authors, ArrayList<String>keywords, File fileWH, File fileWOH) throws CmsysException {
@@ -43,6 +44,11 @@ public class Submission {
 		
 		addAuthors(pid, authors);
 		addKeywords(pid, keywords);
+		
+		User user = User.getUserByUid(uid);
+		
+		if (user.getRole() == 1)
+			user.changeRole(2);
 	}
 	
 	static public void submitFinalPaper(int pid, File file) throws CmsysException {

@@ -3,23 +3,19 @@ package cmsys.View;
 import java.awt.Component;
 import java.util.ArrayList;
 
-import javax.swing.RowFilter;
 import javax.swing.SwingWorker;
-import javax.swing.RowFilter.Entry;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 
 import cmsys.Common.CmsysException;
 import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.Paper;
-import cmsys.PaperManagement.Status;
 import cmsys.UserManagement.User;
 
 public class PcMemberReviewPanel extends javax.swing.JPanel {
 
-    public PcMemberReviewPanel() {
+	private static final long serialVersionUID = 1825124955484356113L;
+	public PcMemberReviewPanel() {
     	UserDefault userDefault = UserDefault.getInstance();
     	
     	user = (User)userDefault.getObj("user");

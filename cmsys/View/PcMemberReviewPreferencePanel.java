@@ -16,14 +16,15 @@ import cmsys.Common.CronJob;
 import cmsys.Common.Settings;
 import cmsys.Common.Time;
 import cmsys.Common.UserDefault;
+import cmsys.PaperManagement.Check;
 import cmsys.PaperManagement.Paper;
 import cmsys.PaperManagement.Preference;
-import cmsys.PaperManagement.Status;
 import cmsys.UserManagement.User;
 
 public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
 
-    public PcMemberReviewPreferencePanel() {
+	private static final long serialVersionUID = -3580560729592360167L;
+	public PcMemberReviewPreferencePanel() {
     	UserDefault userDefault = UserDefault.getInstance();
     	
     	user = (User)userDefault.getObj("user");
@@ -159,6 +160,8 @@ public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
 							preference.setPreference(0);
 						else if (temp.equals("Yes"))
 							preference.setPreference(2);
+						else if (temp.equals("Confit of interest"))
+							preference.setPreference(3);
 						else
 							preference.setPreference(1);
 						
@@ -232,20 +235,23 @@ public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
     		deadlineLabel.setText("Submission deadline: " + Time.toDate(Long.parseLong(Settings.getSettingFromDB("preferenceDeadline"))));
     	}
     	
-    	Object[][] paperObj = null;
-    	ArrayList<Paper> paperList = Paper.getPaperList();
     	
-    	paperObj = new Object[paperList.size()][3];
+    	ArrayList<Paper> paperList = Paper.getPaperList();
+    	Object[][] paperObj = new Object[paperList.size()][3];
+    	
     	for (int i = 0; i < paperList.size(); i++) {
     		paperObj[i][0] = paperList.get(i).getPid();
     		paperObj[i][1] = paperList.get(i).getTitle();
-    		paperObj[i][2] = "Maybe";
+    		if (Check.isCOI(paperList.get(i), user))
+    			paperObj[i][2] = "Confit of interest";
+    		else
+    			paperObj[i][2] = "Maybe";
     	}
     	
     	model = (new javax.swing.table.DefaultTableModel(paperObj, new String [] {"PID", "Title", "Preference"}) {
 					private static final long serialVersionUID = -7209182869872950827L;
 					public boolean isCellEditable(int row, int column) {
-						if (column == 2)
+						if (column == 2 && !((String)paperObj[row][column]).equals("Confit of interest"))
 							return true;
 						else
 							return false;

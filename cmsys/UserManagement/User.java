@@ -73,7 +73,20 @@ public class User {
 		}
 	}
 	
-	public void changeRole(int role) {
+	public void changeRole(int role) throws CmsysException {
+		Settings settings = Settings.getInstance();
+		Connection conn = settings.getDBConnection();
+		
+		try (
+			PreparedStatement statement = conn.prepareStatement("UPDATE user SET role = ? WHERE uid = ?");
+		) {
+			statement.setInt(1, role);
+			statement.setInt(2, uid);
+
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new CmsysException(24);
+		}
 	}
 	
 	static public User getUserByUid(int uid) throws CmsysException {

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -173,7 +172,8 @@ public class MyPapersPanel extends javax.swing.JPanel {
         filterComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
-            			public boolean include(Entry entry) {
+            			@SuppressWarnings("rawtypes")
+						public boolean include(Entry entry) {
             				String status = (String)entry.getValue(2);
             				if (((String)(filterComboBox.getSelectedItem())).equals("All"))
             					return true;
@@ -389,6 +389,7 @@ public class MyPapersPanel extends javax.swing.JPanel {
 			
 			protected void done() {
 				RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
+					@SuppressWarnings("rawtypes")
 					public boolean include(Entry entry) {
 						String status = (String)entry.getValue(2);
 						if (((String)(filterComboBox.getSelectedItem())).equals("All"))

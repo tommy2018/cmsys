@@ -346,7 +346,7 @@ public class Paper {
 		Connection conn = settings.getDBConnection();
 		
 		try (
-				PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper JOIN distribution USING(pid) HAVING COUNT(DISTINCT(distribution.status)) = 1 AND distribution.status = 1 AND paper.status = 5 AND pid = ?");
+				PreparedStatement statement = conn.prepareStatement("SELECT * FROM paper JOIN distribution USING(pid) WHERE pid = ? HAVING COUNT(DISTINCT(distribution.status)) = 1 AND distribution.status = 1 AND paper.status = 5");
 		) {
 				ResultSet result = null;
 

@@ -25,7 +25,8 @@ public class PcMemberReviewSubPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    private void initComponents() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private void initComponents() {
 
         paperContentsPanel = new javax.swing.JPanel();
         titleLabel = new javax.swing.JLabel();
@@ -477,37 +478,47 @@ public class PcMemberReviewSubPanel extends javax.swing.JPanel {
     private javax.swing.JLabel csDesLabel;
     private javax.swing.JScrollPane csScrollPane;
     private javax.swing.JTextArea csTextArea;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox evaluationComboBox;
     private javax.swing.JLabel evaluationDesLabel;
     private javax.swing.JButton getPdfButton;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox isBPComboBox;
     private javax.swing.JLabel isBPDesLabel;
     private javax.swing.JLabel isSPDesLabel;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox isSPComboBox;
     private javax.swing.JScrollPane ocScrollPane;
     private javax.swing.JSeparator jSeparatorMid;
     private javax.swing.JTextArea ocTextArea;
     private javax.swing.JLabel ocDesLabel;
-    private javax.swing.JComboBox oeComboBox;
+    @SuppressWarnings("rawtypes")
+	private javax.swing.JComboBox oeComboBox;
     private javax.swing.JLabel oeDesLabel;
     private javax.swing.JButton openDiscussionBoardButton;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox originalityComboBox;
     private javax.swing.JLabel originalityDesLabel;
     private javax.swing.JPanel paperContentsPanel;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox presentationComboBox;
     private javax.swing.JLabel presentationDesLabel;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox rcComboBox;
     private javax.swing.JLabel rcDesLabel;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox relevanceComboBox;
     private javax.swing.JLabel relevanceDesLabel;
     private javax.swing.JPanel reviewPanel;
     private javax.swing.JScrollPane reviewScrollPane;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox significanceComboBox;
     private javax.swing.JLabel significanceDesLabel;
     private javax.swing.JLabel strengthsDesLabel;
     private javax.swing.JScrollPane strengthsScrollPane;
     private javax.swing.JTextArea strengthsTextArea;
     private javax.swing.JButton submitButton;
+    @SuppressWarnings("rawtypes")
     private javax.swing.JComboBox tqComboBox;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel tqDesLabel;

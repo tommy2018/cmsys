@@ -27,7 +27,7 @@ public class LoginPanel extends javax.swing.JPanel {
         newUserDesLabel = new javax.swing.JLabel();
 
         signUpButton.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        signUpButton.setText("For demo only (Close PC member preference selection)");
+        signUpButton.setText("Sign up");
         signUpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	CronJob.changeSystemStatusToDistribution();
@@ -125,7 +125,7 @@ public class LoginPanel extends javax.swing.JPanel {
         	
 			if (success) {
 				if (user == null ) {
-					MessageBox.error("Incorrect login information", this);
+					MessageBox.error("Incorrect login information!", this);
 				} else {
 					UserDefault userDefault = UserDefault.getInstance();
 					userDefault.putObj("user", user);

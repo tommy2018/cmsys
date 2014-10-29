@@ -3,7 +3,7 @@ import cmsys.View.*;
 
 import javax.swing.*;
 
-public class MainController {	
+public class CMSYS {	
 	static public void main(String[] args) {
 		@SuppressWarnings("unused")
 		Settings settings = null;

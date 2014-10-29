@@ -6,7 +6,8 @@ import cmsys.Common.Settings;
 
 public class PcChairMainPanel extends javax.swing.JPanel {
 
-    public PcChairMainPanel() {
+	private static final long serialVersionUID = 3423186180949616268L;
+	public PcChairMainPanel() {
         initComponents();
     }
 
@@ -27,6 +28,7 @@ public class PcChairMainPanel extends javax.swing.JPanel {
         	
 			if (status == 2){
 				mainTabbedPane.addTab("Distribution", new DistributionPanel());
+				mainTabbedPane.addTab("Papers", new PapersPanel());
 			} else {
 				mainTabbedPane.addTab("Papers", new PapersPanel());
 			}

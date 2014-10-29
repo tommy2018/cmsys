@@ -1,7 +1,12 @@
 package cmsys.View;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 
+import cmsys.Common.CmsysException;
+import cmsys.PaperManagement.FileManager;
 import cmsys.PaperManagement.Paper;
 
 public class ShowPaperDetailsPanel extends javax.swing.JPanel {
@@ -95,6 +100,21 @@ public class ShowPaperDetailsPanel extends javax.swing.JPanel {
     }
 
     private void pdfWohButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	JFileChooser fc = new JFileChooser();
+    	File file = null;
+    	
+    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	fc.showSaveDialog(this);
+    	
+    	if (fc != null) {
+    		file = fc.getSelectedFile();
+    		try {
+    			FileManager.getFile(paper.getHashWOH(), file.getAbsolutePath());
+    			MessageBox.information("Saved to selected location", this);
+    		} catch (CmsysException e) {
+    			MessageBox.error("Cannot save the file", this);
+    		}
+    	}
     }
     
     private void update() {

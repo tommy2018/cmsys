@@ -9,17 +9,16 @@ import cmsys.PaperManagement.*;
 import cmsys.UserManagement.User;
 import cmsys.Common.*;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SubmitPanel extends javax.swing.JPanel {
 	
 	private static final long serialVersionUID = -5278755803015801659L;
 	public SubmitPanel(Component parent) {
-		userDefault = UserDefault.getInstance();
-		
 		keywordsModel = new DefaultTableModel(null, new String[] {"Keyword"});
 		authorsModel = new DefaultTableModel(null, new String[] {"First name", "Last name"});
 		this.parent = parent;
@@ -363,6 +362,19 @@ public class SubmitPanel extends javax.swing.JPanel {
     		keywords.add((String)((keywordsModel.getValueAt(i, 0))));
     	}
     	
+    	Set<Author> authorSet = new HashSet<Author>(authors);
+    	Set<String> keywordSet = new HashSet<String>(keywords);
+    	
+    	if (authorSet.size() != authors.size()) {
+    		MessageBox.warning("Duplicated values in the author list", this);
+    		return;
+    	}
+    	
+    	if (keywordSet.size() != keywords.size()) {
+    		MessageBox.warning("Duplicated values in the keyword list", this);
+    		return;
+    	}
+    	
     	if (title.length() == 0) {
     		MessageBox.warning("Please fill in the title", this);
     		return;
@@ -443,5 +455,4 @@ public class SubmitPanel extends javax.swing.JPanel {
     private File pdfFileWH, pdfFileWOH;
     DefaultTableModel authorsModel, keywordsModel;
     Component parent;
-    private UserDefault userDefault;
 }

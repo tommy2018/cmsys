@@ -47,7 +47,8 @@ public class Dialog {
 		dialog = new JDialog();
 		dialog.setTitle(title);
 		dialog.setResizable(false);
-		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		if (n != 100)
+			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.add(panel);
 		dialog.pack();
 		dialog.setLocationRelativeTo(parent);
