@@ -19,7 +19,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import cmsys.Common.CmsysException;
 import cmsys.Common.CronJob;
-import cmsys.Common.Time;
 import cmsys.PaperManagement.Distribution;
 import cmsys.PaperManagement.Paper;
 import cmsys.UserManagement.User;
@@ -245,7 +244,7 @@ public class DistributionPanel extends javax.swing.JPanel {
 			    		
 			    		Paper paper = Paper.getPaperByPid((int)(pairs.getKey()));
 			    		for (Integer uid: temp) {
-				    		Distribution.distribute(paper.getPid(), uid, Time.timestamp() + 1728000000);
+				    		Distribution.distribute(paper.getPid(), uid);
 				    	}
 					}
 					

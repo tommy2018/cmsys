@@ -100,6 +100,7 @@ public class SetupForm extends javax.swing.JPanel {
     		Register.newUser(username, password, "", "", "", "", 0);
     		Settings.newSetting("status", "0");
     		Settings.newSetting("submissionDeadline", Long.toString(Time.timestamp() + days * 86400000));
+    		Settings.newSetting("preferenceDeadline", "0");
     		MessageBox.information("Done, you can reopen the program now!", this);
     		jButton1.setEnabled(false);
     	} catch (Exception e) {

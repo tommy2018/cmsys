@@ -121,7 +121,7 @@ public class LoginPanel extends javax.swing.JPanel {
 				success = true;
 			} catch (CmsysException e) {
 				System.out.println(e.getMessage());
-				MessageBox.error("Unable to preform this action at the moment.", this);
+				MessageBox.error("Unable to preform this action at the moment. " + e.getMessage(), this);
 			}
         	
 			if (success) {

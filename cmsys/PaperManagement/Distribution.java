@@ -52,27 +52,28 @@ public class Distribution {
 			
 			statement.executeUpdate();
 		} catch (SQLException e) {
+			System.out.println(e);
 			throw new CmsysException(24);
 		}		
 	}
 	
-	static public void distribute(int pid, int uid, long expiryDate) throws CmsysException{
+	static public void distribute(int pid, int uid) throws CmsysException{
 		Settings settings = Settings.getInstance();
 		Connection conn = settings.getDBConnection();
 		
 		try (
-			PreparedStatement statement = conn.prepareStatement("INSERT INTO distribution(uid, pid, deadline, status) VALUES(?, ?, ?, ?)");
+			PreparedStatement statement = conn.prepareStatement("INSERT INTO distribution(uid, pid, status) VALUES(?, ?, ?)");
 		) {
 
 			statement.setInt(1, uid);
 			statement.setInt(2, pid);
-			statement.setLong(3, expiryDate);
-			statement.setInt(4, 0);
+			statement.setInt(3, 0);
 			
 			statement.executeUpdate();
 			
 			Paper.startToReview(pid);
 		} catch (SQLException e) {
+			System.out.println(e);
 			throw new CmsysException(24);
 		}		
 	}

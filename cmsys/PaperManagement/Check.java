@@ -12,7 +12,7 @@ public class Check {
         User UserSubmiter = User.getUserByUid(p.getUid());
         String SubmiterEmail = UserSubmiter.getEmail();
         String ReviewerEmail = u.getEmail();
-        
+        try {
         Pattern pattern = Pattern.compile("@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?");
         Matcher mSubmitEmail = pattern.matcher(SubmiterEmail);
         Matcher mReviewerEmail = pattern.matcher(ReviewerEmail);
@@ -35,6 +35,9 @@ public class Check {
             
         }
         return false;
+        } catch (Exception e) {
+        	return false;
+        }
     }
 
 }

@@ -2,6 +2,8 @@ package cmsys.View;
 
 import java.util.ArrayList;
 
+import javax.swing.JTextArea;
+
 import cmsys.Common.CmsysException;
 import cmsys.Common.CronJob;
 import cmsys.Common.Log;
@@ -13,9 +15,11 @@ public class PcChairMainPanel extends javax.swing.JPanel {
 
 	private static final long serialVersionUID = 3423186180949616268L;
 	public PcChairMainPanel() {
+		
         initComponents();
         UserDefault userDefault = UserDefault.getInstance();
         User user = (User)(userDefault.getObj("user"));
+        
         ArrayList<Log> logList;
 		try {
 			logList = Log.getLogByUid(user.getUID());
@@ -36,6 +40,7 @@ public class PcChairMainPanel extends javax.swing.JPanel {
         latestEventsScrollPane = new javax.swing.JScrollPane();
         latestEventsDesLabel = new javax.swing.JLabel();
         mainTabbedPane = new javax.swing.JTabbedPane();
+        latestEventsTextArea = new JTextArea();
         
         latestEventsTextArea.setEditable(false);
         latestEventsTextArea.setColumns(20);

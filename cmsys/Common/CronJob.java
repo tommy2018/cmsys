@@ -80,7 +80,7 @@ public class CronJob {
 						mark += p * total;
 						
 						if (mark >= baseline) {
-							Distribution.distribute(paper.getPid(), user.getUID(), Time.timestamp() + 432000000);
+							Distribution.tempDistribute(paper.getPid(), user.getUID());
 							marker++;
 						}
 					}
@@ -104,7 +104,7 @@ public class CronJob {
 							mark += p * total;
 							
 							if (mark >= baseline1) {
-								Distribution.distribute(paper.getPid(), user.getUID(), Time.timestamp() + 432000000);
+								Distribution.tempDistribute(paper.getPid(), user.getUID());
 								marker++;
 							}
 						}
@@ -115,7 +115,7 @@ public class CronJob {
 					for (User user : pmList) {
 						int p = Preference.getPreference(user.getUID(), paper.getPid());
 						if (p != 3) {
-							Distribution.distribute(paper.getPid(), user.getUID(), Time.timestamp() + 432000000);
+							Distribution.tempDistribute(paper.getPid(), user.getUID());
 						}
 						
 						if (marker >= 2)
@@ -126,6 +126,7 @@ public class CronJob {
 			
 			Settings.updateSetting("status", "2");
 		} catch (CmsysException e) {
+			System.out.println(e.getMessage());
 		}
 		
 	}
