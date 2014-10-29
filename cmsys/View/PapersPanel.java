@@ -14,6 +14,7 @@ import javax.swing.table.TableRowSorter;
 
 import cmsys.Common.CmsysException;
 import cmsys.Common.CronJob;
+import cmsys.Common.Log;
 import cmsys.Common.Settings;
 import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.Paper;
@@ -213,6 +214,8 @@ public class PapersPanel extends javax.swing.JPanel {
 					paper = Paper.getPaperByPid(pid);
 					Paper.accept(paper.getPid());
 					dialog.close();
+					User author = User.getUserByUid(paper.getUid());
+					Log.newLog(author.getUID(), "Paper: " + paper.getTitle() + " accepted");
 					MessageBox.information("Paper accepted.", me);
 				} catch (CmsysException e) {
 					dialog.close();
@@ -243,6 +246,8 @@ public class PapersPanel extends javax.swing.JPanel {
 					paper = Paper.getPaperByPid(pid);
 					Paper.decline(paper.getPid());
 					dialog.close();
+					User author = User.getUserByUid(paper.getUid());
+					Log.newLog(author.getUID(), "Paper: " + paper.getTitle() + " rejected");
 					MessageBox.information("Paper declined.", me);
 				} catch (CmsysException e) {
 					dialog.close();

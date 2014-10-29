@@ -7,6 +7,7 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingWorker;
 
 import cmsys.Common.CmsysException;
+import cmsys.Common.Log;
 import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.FileManager;
 import cmsys.PaperManagement.Paper;
@@ -452,6 +453,7 @@ public class PcMemberReviewSubPanel extends javax.swing.JPanel {
 					try {
 						Review.submitReview(review);
 						dialog.close();
+						Log.newLog(user.getUID(), "Paper: " + paper.getTitle() + " reviewed by " + user.getUsername());
 						MessageBox.information("Your review has been submitted, thank you!", me);
 						success = true;
 					} catch (CmsysException e) {

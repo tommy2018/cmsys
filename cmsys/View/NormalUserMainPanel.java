@@ -1,10 +1,32 @@
 package cmsys.View;
 
+import java.util.ArrayList;
+
+import cmsys.Common.CmsysException;
+import cmsys.Common.Log;
+import cmsys.Common.UserDefault;
+import cmsys.UserManagement.User;
+
 public class NormalUserMainPanel extends javax.swing.JPanel {
 
 	private static final long serialVersionUID = -4851645849373554801L;
 	public NormalUserMainPanel() {
         initComponents();
+        UserDefault userDefault = UserDefault.getInstance();
+		
+		User user = (User)(userDefault.getObj("user"));
+        ArrayList<Log> logList;
+		try {
+			logList = Log.getLogByUid(user.getUID());
+			String temp = "";
+			for (Log log: logList) {
+	        	temp += log.getMessage() + '\n';
+	        }
+			latestEventsTextArea.setText(temp);
+		} catch (CmsysException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void initComponents() {

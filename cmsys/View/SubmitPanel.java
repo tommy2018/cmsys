@@ -410,6 +410,7 @@ public class SubmitPanel extends javax.swing.JPanel {
 					try {
 						Submission.submitPaper(user.getUID(), title, paperAbstract, authors, keywords, pdfFileWH, pdfFileWOH);
 						dialog.close();
+						Log.newLog(user.getUID(), "Paper: " + title + " submitted");
 						MessageBox.information("Your paper has been submitted, thank you!", me);
 						success = true;
 					} catch (CmsysException e) {

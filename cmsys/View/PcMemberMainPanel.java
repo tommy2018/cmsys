@@ -1,7 +1,10 @@
 package cmsys.View;
 
+import java.util.ArrayList;
+
 import cmsys.Common.CmsysException;
 import cmsys.Common.CronJob;
+import cmsys.Common.Log;
 import cmsys.Common.Settings;
 import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.Preference;
@@ -15,6 +18,21 @@ public class PcMemberMainPanel extends javax.swing.JPanel {
 		
 		user = (User)(userDefault.getObj("user"));
         initComponents();
+        
+        ArrayList<Log> logList;
+		try {
+			logList = Log.getLogByUid(user.getUID());
+			String temp = "";
+			for (Log log: logList) {
+	        	temp += log.getMessage() + '\n';
+	        }
+			latestEventsTextArea.setText(temp);
+		} catch (CmsysException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        
     }
 
     private void initComponents() {

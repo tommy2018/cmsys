@@ -60,9 +60,55 @@ public class CronJob {
 			}
 			
 			//Distribute
+			int baseline = 4;
+			
 			for (Paper paper : paperList) {
+				int marker = 0;
 				for (User user : pmList) {
-					Distribution.tempDistribute(paper.getPid(), user.getUID());
+					int mark = 0;
+					int p = Preference.getPreference(user.getUID(), paper.getPid());
+					if (p != 3) {
+						ArrayList<String> list = paper.getKeywords();
+						String keyword = user.getRA();
+						int total = 1;
+						
+						for (String s : list) {
+							if (s.equals(keyword))
+								total++;
+						}
+						
+						mark += p * total;
+						
+						if (mark >= baseline) {
+							Distribution.distribute(paper.getPid(), user.getUID(), Time.timestamp() + 432000000);
+							marker++;
+						}
+					}
+				}
+				
+				if (marker < 2) {
+					for (User user : pmList) {
+						int baseline1 = 1;
+						int mark = 0;
+						int p = Preference.getPreference(user.getUID(), paper.getPid());
+						if (p != 3) {
+							ArrayList<String> list = paper.getKeywords();
+							String keyword = user.getRA();
+							int total = 1;
+							
+							for (String s : list) {
+								if (s.equals(keyword))
+									total++;
+							}
+							
+							mark += p * total;
+							
+							if (mark >= baseline1) {
+								Distribution.distribute(paper.getPid(), user.getUID(), Time.timestamp() + 432000000);
+								marker++;
+							}
+						}
+					}
 				}
 			}
 			

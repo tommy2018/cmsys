@@ -22,10 +22,13 @@ public class AdminMainPanel extends javax.swing.JPanel {
         latestEventsDesLabel.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         latestEventsDesLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         latestEventsDesLabel.setText("Latest events:");
+        
+        latestEventsDesLabel.setVisible(false);
+        latestEventsScrollPane.setVisible(false);
 
 
         mainTabbedPane.addTab("User management", new UserManagementPanel());
-        mainTabbedPane.addTab("System settings", new SystemSettingsPanel());
+        //mainTabbedPane.addTab("System settings", new SystemSettingsPanel());
         mainTabbedPane.addTab("My details", new MyDetailsPanel());
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

@@ -2,7 +2,6 @@ package cmsys.View;
 import javax.swing.JFrame;
 
 import cmsys.Common.CmsysException;
-import cmsys.Common.CronJob;
 import cmsys.Common.UserDefault;
 import cmsys.UserManagement.*;
 
@@ -30,7 +29,9 @@ public class LoginPanel extends javax.swing.JPanel {
         signUpButton.setText("Sign up");
         signUpButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	CronJob.changeSystemStatusToDistribution();
+            	JFrame frame = new RegisterForm();
+            	frame.pack();
+            	frame.setVisible(true);
             }
         });
         loginButton.setText("Login");

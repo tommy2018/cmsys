@@ -7,8 +7,10 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingWorker;
 
 import cmsys.Common.CmsysException;
-import cmsys.PaperManagement.Paper;
+import cmsys.Common.Log;
+import cmsys.Common.UserDefault;
 import cmsys.PaperManagement.*;
+import cmsys.UserManagement.User;
 
 public class FinalSubmitPanel extends javax.swing.JPanel {
 
@@ -140,6 +142,9 @@ public class FinalSubmitPanel extends javax.swing.JPanel {
 					try {
 						Submission.submitFinalPaper(paper.getPid(), pdfFile);
 						dialog.close();
+						UserDefault userDefault = UserDefault.getInstance();
+						User user = (User)(userDefault.getObj("user"));
+						Log.newLog(user.getUID(), "Paper: " + paper.getTitle() + " final version submitted");
 						MessageBox.information("Your paper has been submitted, thank you!", me);
 						success = true;
 					} catch (CmsysException e) {

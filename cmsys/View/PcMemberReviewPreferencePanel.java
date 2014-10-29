@@ -157,13 +157,13 @@ public class PcMemberReviewPreferencePanel extends javax.swing.JPanel {
 						preference.setUid(user.getUID());
 						
 						if (temp.equals("Maybe"))
-							preference.setPreference(0);
+							preference.setPreference(1);
 						else if (temp.equals("Yes"))
 							preference.setPreference(2);
 						else if (temp.equals("Confit of interest"))
 							preference.setPreference(3);
 						else
-							preference.setPreference(1);
+							preference.setPreference(0);
 						
 						preferenceList.add(preference);
 					}

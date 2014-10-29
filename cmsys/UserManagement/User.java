@@ -17,21 +17,27 @@ public class User {
 	private String lastName;
 	private String email;
 	private String username;
-	private ArrayList<String> researchAreas;
+	private String research;
 
-	public User(int uid, String username, String firstName, String lastName, String email, int role) {
+	public User(int uid, String username, String firstName, String lastName, String email, int role, String rs) {
 		this.uid = uid;
 		this.role = role;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.username = username;
+		research = rs;
 	}
 	
 	public String getEmail() {
 		return email;
 	}
 
+	public String getRA() {
+		return research;
+	}
+	
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -50,10 +56,6 @@ public class User {
 
 	public int getRole() {
 		return role;
-	}
-	
-	public ArrayList<String> getResearchAreas() {
-		return researchAreas;
 	}
 	
 	public void changePassword(String password) throws CmsysException {
@@ -104,7 +106,7 @@ public class User {
 		 	
 			while (result.next()) {
 				user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
-						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+						result.getString("lastName"), result.getString("email"), result.getInt("role"), result.getString("research"));
 			}
 			
 		 	return user;
@@ -127,7 +129,7 @@ public class User {
 		 	
 			while (result.next()) {
 				User user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
-						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+						result.getString("lastName"), result.getString("email"), result.getInt("role"), result.getString("research"));
 				list.add(user);
 			}
 			
@@ -154,7 +156,7 @@ public class User {
 		 	
 			while (result.next()) {
 				User user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
-						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+						result.getString("lastName"), result.getString("email"), result.getInt("role"), result.getString("research"));
 				list.add(user);
 			}
 			
@@ -182,7 +184,7 @@ public class User {
 		 	
 			while (result.next()) {
 				User user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
-						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+						result.getString("lastName"), result.getString("email"), result.getInt("role"), result.getString("research"));
 				list.add(user);
 			}
 			

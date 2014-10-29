@@ -22,7 +22,7 @@ public class Login {
 			
 			if (result.next()) {
 				user = new User(result.getInt("uid"), result.getString("username"), result.getString("firstName"),
-						result.getString("lastName"), result.getString("email"), result.getInt("role"));
+						result.getString("lastName"), result.getString("email"), result.getInt("role"), result.getString("research"));
 			}
 
 			return user;
