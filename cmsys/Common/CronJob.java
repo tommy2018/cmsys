@@ -110,6 +110,18 @@ public class CronJob {
 						}
 					}
 				}
+				
+				if (marker < 2) {
+					for (User user : pmList) {
+						int p = Preference.getPreference(user.getUID(), paper.getPid());
+						if (p != 3) {
+							Distribution.distribute(paper.getPid(), user.getUID(), Time.timestamp() + 432000000);
+						}
+						
+						if (marker >= 2)
+							break;
+					}
+				}
 			}
 			
 			Settings.updateSetting("status", "2");
